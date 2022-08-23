@@ -6,7 +6,7 @@ const { conn } = require('./database.js');
 
 // Syncing all the models at once.
 // force/alter
-conn.sync({ alter: true }).then(() => {
+conn.sync({ force: true }).then(() => {
   app.listen(3001, () => {
     console.log('%s listening at 3001'); // eslint-disable-line no-console
   });

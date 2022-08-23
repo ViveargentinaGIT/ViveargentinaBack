@@ -14,7 +14,7 @@ const modelDefiners = [];
 fs.readdirSync(path.join(__dirname, '/models'))
 .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
 .forEach((file) => {
-    console.log(require(path.join(__dirname, '/models', file)))
+    // console.log(require(path.join(__dirname, '/models', file)))
     modelDefiners.push(require(path.join(__dirname, '/models', file)));
   });
 
@@ -27,9 +27,41 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
+const {
+  Administrator,
+  Category,
+  Experience,
+  Package,
+  Provider,
+  Province,
+  Query,
+  Region,
+  Reservation,
+  Review,
+  User
+} = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
+
+Category.hasMany(Experience);
+Experience.belongsTo(Category);
+Region.hasMany(Province);
+Province.belongsTo(Region);
+Province.hasMany(Package);
+Package.belongsTo(Province);
+Package.hasMany(Experience);
+Experience.belongsTo(Package);
+// Experience.hasMany(Reservation);
+// Reservation.hasMany(Experience);
+User.hasMany(Query);
+Query.belongsTo(User);
+User.hasMany(Review);
+Review.belongsTo(User)
+User.belongsToMany(Package, {through: 'reservation'});
+Package.belongsToMany(User, {through: 'reservation'});
+Provider.belongsToMany(Experience, {through: 'provider_experience'});
+Experience.belongsToMany(Provider, {through: 'provider_experience'});
 
 
 module.exports = {
