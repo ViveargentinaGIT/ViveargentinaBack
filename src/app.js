@@ -2,6 +2,8 @@ const express = require("express");
 const regions = require("./routes/regions.js");
 const administrators = require("./routes/administrators.js");
 const categories = require("./routes/categories.js")
+const experiences = require("./routes/experiences.js")
+const package = require("./routes/packages.js")
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -22,7 +24,9 @@ app.use((req, res, next) => {
 
 app.use('/administrators', administrators);
 app.use('/regions', regions);
-app.use('/categories', categories)
+app.use('/categories', categories);
+app.use('/experiences', experiences);
+app.use('/packages', package);
 
 
 module.exports = app;
