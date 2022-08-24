@@ -1,14 +1,14 @@
 // import app from './app.js'
 // import {conn} from './database/database.js'
 
-const app = require('./app.js');
-const { conn } = require('./database.js');
+const app = require("./app.js");
+const { conn } = require("./database.js");
 
 // Syncing all the models at once.
 // force/alter
-conn.sync({ force: true }).then(() => {
+conn.sync({ alter: true }).then(() => {
   app.listen(3001, () => {
-    console.log('%s listening at 3001'); // eslint-disable-line no-console
+    console.log("%s listening at 3001"); // eslint-disable-line no-console
   });
 });
 // async function main(){
