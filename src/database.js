@@ -52,24 +52,38 @@ const {
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
 
-Category.hasMany(Experience);
+Category.hasMany(Experience, {
+  foreignKey: "categoryId",
+});
 Experience.belongsTo(Category);
-Region.hasMany(Province);
+Region.hasMany(Province, {
+  foreignKey: "regionId",
+});
 Province.belongsTo(Region);
-Province.hasMany(Package);
+Province.hasMany(Package, {
+  foreignKey: "provinceId",
+});
 Package.belongsTo(Province);
-Package.hasMany(Experience);
+Package.hasMany(Experience, {
+  foreignKey: "packageId",
+});
 Experience.belongsTo(Package);
 // Experience.hasMany(Reservation);
 // Reservation.hasMany(Experience);
-User.hasMany(Query);
+User.hasMany(Query, {
+  foreignKey: "userId",
+});
 Query.belongsTo(User);
-User.hasMany(Review);
+User.hasMany(Review, {
+  foreignKey: "userId",
+});
 Review.belongsTo(User);
 User.belongsToMany(Package, { through: "reservation" });
 Package.belongsToMany(User, { through: "reservation" });
 Provider.belongsToMany(Experience, { through: "provider_experience" });
 Experience.belongsToMany(Provider, { through: "provider_experience" });
+Reservation.belongsToMany(Experience, { through: "reservation_experience" });
+Experience.belongsToMany(Reservation, { through: "reservation_experience" });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
