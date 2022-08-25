@@ -1,14 +1,14 @@
 const { Router } = require("express");
-const { Administrator } = require("../database");
+const { Provider } = require("../database");
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const administrators = await Administrator.findAll();
-    if (administrators.length > 0) return res.status(200).send(administrators);
+    const providers = await Provider.findAll();
+    if (providers.length > 0) return res.status(200).send(providers);
     else {
-      return res.status(201).send("There are no administrators yet");
+      return res.status(201).send("There are no providers yet");
     }
   } catch (err) {
     console.log(err);
@@ -24,16 +24,17 @@ router.post("/", async (req, res) => {
     return res
       .status(201)
       .send(
-        "You must enter a name, email and password to create the new administrator"
+        "You must enter a name, email and password to create the new provider"
       );
   } else {
     try {
-      const newAdministrator = await Administrator.create({
+      const newProvider = await Provider.create({
         name,
         email,
         password,
       });
-      res.status(201).json(newAdministrator);
+
+      res.status(201).json(newProvider);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
