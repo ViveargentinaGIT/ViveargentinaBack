@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const sequelize = new Sequelize(
-  "postgres://postgres:rosso504@localhost:5432/viveargentina"
+  "postgres://bwjfgkhjaqzzom:c23d68cc680fdbf5531cb2ecf642d4acf1ad6e08be365b7dd8ca55f1be10ce64@ec2-3-224-184-9.compute-1.amazonaws.com:5432/d4stoe6653ib1l"
 );
 
 const basename = path.basename(__filename);
