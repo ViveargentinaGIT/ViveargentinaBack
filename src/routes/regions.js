@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const regions = await Region.findAll({ include: Cities });
+    const regions = await Region.findAll();
 
     if (regions.length > 0) return res.status(200).send(regions);
     else {
@@ -21,6 +21,7 @@ router.get("/:regionID", async (req, res) => {
   try {
     const { regionID } = req.params;
     const selectedRegion = await Region.findByPk(regionID, { include: Cities });
+    console.log(selectedRegion)
     if (selectedRegion) return res.status(200).send(selectedRegion);
     else {
       return res.status(201).send("There are no region with this ID");
