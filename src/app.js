@@ -6,6 +6,9 @@ const experiences = require("./routes/experiences.js");
 const package = require("./routes/packages.js");
 const provider = require("./routes/providers.js");
 const user = require("./routes/users.js");
+const city = require("./routes/cities.js");
+const query = require("./routes/queries.js");
+const review = require("./routes/reviews.js");
 
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -35,5 +38,8 @@ app.use("/experiences", experiences);
 app.use("/packages", package);
 app.use("/providers", provider);
 app.use("/users", user);
+app.use("/queries", query);
+app.use("/reviews", review);
+app.use("/cities", city);
 
 module.exports = app;
