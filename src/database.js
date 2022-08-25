@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const sequelize = new Sequelize(
-  "postgres://postgres:66991344@localhost:5432/viveargentina"
+  "postgres://postgres:rosso504@localhost:5432/viveargentina"
 );
 
 const basename = path.basename(__filename);
@@ -41,7 +41,7 @@ const {
   Experience,
   Package,
   Provider,
-  Province,
+  Cities,
   Query,
   Region,
   Reservation,
@@ -56,14 +56,14 @@ Category.hasMany(Experience, {
   foreignKey: "categoryId",
 });
 Experience.belongsTo(Category);
-Region.hasMany(Province, {
+Region.hasMany(Cities, {
   foreignKey: "regionId",
 });
-Province.belongsTo(Region);
-Province.hasMany(Package, {
-  foreignKey: "provinceId",
+Cities.belongsTo(Region);
+Cities.hasMany(Package, {
+  foreignKey: "cityId",
 });
-Package.belongsTo(Province);
+Package.belongsTo(Cities);
 Package.hasMany(Experience, {
   foreignKey: "packageId",
 });
