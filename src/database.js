@@ -41,7 +41,7 @@ const {
   Experience,
   Package,
   Provider,
-  Cities,
+  City,
   Query,
   Region,
   Reservation,
@@ -56,14 +56,14 @@ Category.hasMany(Experience, {
   foreignKey: "categoryId",
 });
 Experience.belongsTo(Category);
-Region.hasMany(Cities, {
+Region.hasMany(City, {
   foreignKey: "regionId",
 });
-Cities.belongsTo(Region);
-Cities.hasMany(Package, {
+City.belongsTo(Region);
+City.hasMany(Package, {
   foreignKey: "cityId",
 });
-Package.belongsTo(Cities);
+Package.belongsTo(City);
 Package.hasMany(Experience, {
   foreignKey: "packageId",
 });
