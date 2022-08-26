@@ -13,11 +13,12 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         date: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.STRING,  //corregir el string acá y en los otros
+            // allowNull: false
         },
         status: {
             type: DataTypes.STRING,
-            allowNull: false
+            defaultValue: 'Unread'
+            // allowNull: false
         }
     })}

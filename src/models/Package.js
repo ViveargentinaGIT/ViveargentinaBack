@@ -12,21 +12,17 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING(250),
             allowNull: false
         },
-        // province: {
-        //     type: DataTypes.STRING(250),
-        //     allowNull: false
-        // }
         description: {
             type: DataTypes.STRING(250),
             allowNull: false
         },
         image: {
             type: DataTypes.STRING,
-            allowNull: false
+            // allowNull: false
         },
         video: {
             type: DataTypes.STRING,
-            allowNull: true
+            // allowNull: true
         },
         price: {
             type: DataTypes.INTEGER,

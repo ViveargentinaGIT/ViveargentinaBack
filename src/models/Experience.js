@@ -22,11 +22,11 @@ module.exports = (sequelize) => {
         },
         image: {
             type: DataTypes.STRING,
-            allowNull: false
+            // allowNull: false
         },
         video: {
             type: DataTypes.STRING,
-            allowNull: true
+            // allowNull: true
         },
         duration: {
             type: DataTypes.STRING,
@@ -43,6 +43,6 @@ module.exports = (sequelize) => {
         disabled: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
-            allowNull: false
+            // allowNull: false
         } 
     })}

@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
         },
         registered: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            // allowNull: false,
             defaultValue: false
-        }
+        },
     })}

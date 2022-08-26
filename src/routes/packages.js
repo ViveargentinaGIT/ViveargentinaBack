@@ -1,79 +1,62 @@
 const { Router } = require("express");
 const { Package, City, Experience } = require("../database");
+const { Op } = require('sequelize');
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
-    const packages = await Package.findAll({
-      include: City,
-      Experience,
-    });
-    if (packages.length > 0) return res.status(200).send(packages);
-    else {
-      return res.status(201).send("There are no packages yet");
+    if(name) {
+      let searchedPackage = await Package.findAll({where: {
+        [Op.or]: [
+          {name: {[Op.substring]: name}},
+          {name: {[Op.substring]: name[0].toUpperCase() + name.slice(1)}},
+          {name: name[0].toUpperCase() + name.slice(1)},
+        ]
+      }}, {include: [City, Experience]});
+      searchedPackage.length ?
+      res.status(201).json(searchedPackage) :
+      res.status(404).send('Package not found');
+    } else {
+      const allPackages = await Package.findAll({include: [City, Experience]});
+      return res.status(200).send(allPackages);
     }
   } catch (err) {
-    console.log(err);
-    res.status(400).send("There was a problem with your search");
+    res.status(400).json({error: err.message});
   }
 });
 
-router.get("/:packageID", async (req, res) => {
+router.get("/:packageId", async (req, res) => {
+  const { packageId } = req.params;
   try {
-    const { packageID } = req.params;
-    const selectedPachage = await Package.findByPk(packageID, {
-      include: City,
-      Experience,
-    });
-    if (selectedPachage) return res.status(200).send(selectedPachage);
-    else {
-      return res.status(201).send("There are no expetience with this ID");
-    }
+    const selectedPackage = await Package.findByPk(packageId, {include: [City, Experience]});
+    return res.status(200).send(selectedPackage);
   } catch (err) {
-    console.log(err);
-    res.status(400).send("An error ocurred while searching for the region");
+    res.status(400).json({error: err.message});
   }
 });
 
 router.post("/", async (req, res) => {
-  const {
-    name,
-    description,
-    image,
-    video,
-    price,
-    duration,
-    stock,
-    score,
-    cityId,
-  } = req.body;
-  if (!name) {
-    return res.status(201).send("You must enter a name");
-  } else {
+  const {name, description, image, video, price, duration, stock, score, cityId} = req.body;
+  if (!name) return res.status(201).send("You must enter a name");
     try {
-      const newPackage = await Package.create({
-        name,
-        price,
-        description,
-        image,
-        video,
-        duration,
-        stock,
-        score,
-      });
-
+      const newPackage = await Package.create({name, price, description, image, video, duration, stock, score});
       const selectedCity = await City.findByPk(cityId);
-      newExperience.addCity(selectedCity);
-
+      newPackage.setCity(selectedCity);
       return res.status(201).json(newPackage);
     } catch (err) {
-      console.log(err);
-      return res
-        .status(404)
-        .send("There was an error in the creation of the package");
+      return res.status(404).json({error: err.message});
     }
+});
+
+router.delete('/:packageId', async (req, res) => {
+  const {packageId} = req.params;
+  try {
+    await Package.destroy({where: {id: packageId}});
+    res.status(200).send('Package deleted successfully')
+  } catch (err) {
+    res.status(404).json({error: err.message});
   }
 });
 

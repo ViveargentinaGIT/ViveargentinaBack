@@ -5,37 +5,31 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const users = await User.findAll({
-      include: Query,
-      Review,
-    });
-    if (users.length > 0) return res.status(200).send(users);
-    else {
-      return res.status(201).send("There are no users yet");
-    }
+    const allUsers = await User.findAll({include: [Query, Review]});
+    return res.status(200).send(allUsers);
   } catch (err) {
-    console.log(err);
-    res.status(400).send("An error ocurred while searching for the users");
+    res.status(400).json({error: err.message});
   }
-});
+}); 
 
 router.post("/", async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res
-      .status(201)
-      .send("You must enter a name, email and password to create the new user");
-  } else {
-    try {
-      const newUser = await User.create({
-        name,
-        email,
-        password,
-      });
-      res.status(201).json(newUser);
-    } catch (e) {
-      res.status(400).json({ error: e.message });
-    }
+  if (!name || !email || !password) return res.status(404).send("You must enter a name, email and password to create a new user");
+  try {
+    const newUser = await User.create({name, email, password});
+    return res.status(201).json(newUser);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.delete('/:userId', async (req, res) => {
+  const {userId} = req.params;
+  try {
+    await User.destroy({where: {id: userId}});
+    res.status(200).send('User deleted successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
   }
 });
 
