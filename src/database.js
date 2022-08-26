@@ -12,8 +12,7 @@ const sequelize = new Sequelize("postgres://hyrnrcsr:trMyaT4KZ_TyUxfOQJdBGMX-rO5
     }
   },
   logging: false
-}
-);
+});
 
 const basename = path.basename(__filename);
 
