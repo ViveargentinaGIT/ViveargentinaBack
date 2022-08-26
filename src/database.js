@@ -4,24 +4,16 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize("postgres://glzzauxhpjqfru:260e621a005c4f37e4efd22637ebf8844684e548cd7312f706556520709e5a0d@ec2-34-227-135-211.compute-1.amazonaws.com:5432/d818agm2f2a734", {
   dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
     }
-  }
+  },
+  logging: false
 }
 );
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
 
 const basename = path.basename(__filename);
 
