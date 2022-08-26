@@ -1,11 +1,17 @@
 const { Router } = require("express");
-const { Region, Cities } = require("../database");
+const { Region, City } = require("../database");
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const regions = await Region.findAll();
+    const regions = await Region.findAll({
+      include: [
+        {
+          model: City,
+        },
+      ],
+    });
 
     if (regions.length > 0) return res.status(200).send(regions);
     else {
@@ -20,8 +26,8 @@ router.get("/", async (req, res) => {
 router.get("/:regionID", async (req, res) => {
   try {
     const { regionID } = req.params;
-    const selectedRegion = await Region.findByPk(regionID, { include: Cities });
-    console.log(selectedRegion)
+    const selectedRegion = await Region.findByPk(regionID, { include: City });
+    console.log(selectedRegion);
     if (selectedRegion) return res.status(200).send(selectedRegion);
     else {
       return res.status(201).send("There are no region with this ID");

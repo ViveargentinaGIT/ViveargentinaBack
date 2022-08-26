@@ -7,8 +7,7 @@ router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
     const packages = await Package.findAll({
-      include: City,
-      Experience,
+      include: [City, Experience],
     });
     if (packages.length > 0) return res.status(200).send(packages);
     else {
@@ -24,8 +23,7 @@ router.get("/:packageID", async (req, res) => {
   try {
     const { packageID } = req.params;
     const selectedPachage = await Package.findByPk(packageID, {
-      include: City,
-      Experience,
+      include: [City, Experience],
     });
     if (selectedPachage) return res.status(200).send(selectedPachage);
     else {
@@ -65,7 +63,7 @@ router.post("/", async (req, res) => {
       });
 
       const selectedCity = await City.findByPk(cityId);
-      newExperience.addCity(selectedCity);
+      newPackage.setCity(selectedCity);
 
       return res.status(201).json(newPackage);
     } catch (err) {

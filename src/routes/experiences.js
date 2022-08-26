@@ -6,8 +6,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const experiences = await Experience.findAll({
-      include: Category,
-      Package,
+      include: [Package, Category],
     });
     if (experiences.length > 0) return res.status(200).send(experiences);
     else {
@@ -23,8 +22,7 @@ router.get("/:experienceID", async (req, res) => {
   try {
     const { experienceID } = req.params;
     const selectedExperience = await Experience.findByPk(experienceID, {
-      include: Category,
-      Package,
+      include: [Package, Category],
     });
     if (selectedExperience) return res.status(200).send(selectedExperience);
     else {
@@ -67,8 +65,8 @@ router.post("/", async (req, res) => {
       const selectedCategory = await Category.findByPk(categoryId);
       const selectedPackage = await Package.findByPk(packageId);
 
-      newExperience.addCategory(selectedCategory);
-      newExperience.addPackage(selectedPackage);
+      newExperience.setCategory(selectedCategory);
+      newExperience.setPackage(selectedPackage);
 
       return res.status(201).json(newExperience);
     } catch (err) {

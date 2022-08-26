@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 router.get("/:categoryID", async (req, res) => {
   try {
     const { categoryID } = req.params;
-    const selectedCategory = await Region.findByPk(categoryID, {
+    const selectedCategory = await Category.findByPk(categoryID, {
       include: Experience,
     });
     if (selectedCategory) return res.status(200).send(selectedCategory);
