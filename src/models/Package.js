@@ -1,6 +1,7 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
+
     sequelize.define('package', {
         id: {
             type: DataTypes.UUID,
@@ -42,3 +43,4 @@ module.exports = (sequelize) => {
         }
     })
 }
+

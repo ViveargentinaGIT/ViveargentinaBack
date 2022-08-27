@@ -5,8 +5,8 @@ const { Op } = require('sequelize');
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const { name } = req.query;
   try {
+
     if(name) {
       let searchedCity = await City.findAll({where: {
         [Op.or]: [
@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
     } else {
       const allCities = await City.findAll({include: Region});
       return res.status(200).send(allCities);
+
     }
   } catch (err) {
     res.status(400).json({error: err.message});
@@ -28,9 +29,11 @@ router.get("/", async (req, res) => {
 
 router.get("/:cityId", async (req, res) => {
   try {
+
     const { cityId } = req.params;
     const searchedCity = await City.findAll({where: {id: cityId}}, {include: Region});
     return res.status(200).send(searchedCity);
+
   } catch (err) {
     res.status(400).json({error: err.message});
   }
@@ -38,6 +41,7 @@ router.get("/:cityId", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, description, image, video, regionId } = req.body;
+
   if (!name || !description) return res.status(201).send("You must enter a name and a description");
   try {
     let newCity = await City.create({name, description, image, video});
@@ -56,6 +60,7 @@ router.delete('/:cityId', async (req, res) => {
     res.status(200).send('City deleted successfully');
   } catch (err) {
     res.status(404).json({error: err.message});
+
   }
 });
 

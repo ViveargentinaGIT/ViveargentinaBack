@@ -5,8 +5,10 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
+
     const allExperiences = await Experience.findAll({include: [Category, Package]});
     return res.status(200).send(allExperiences);
+
   } catch (err) {
     res.status(400).json({error: err.message});
   }
@@ -15,14 +17,17 @@ router.get("/", async (req, res) => {
 router.get("/:experienceId", async (req, res) => {
   const { experienceId } = req.params;
   try {
+
     const selectedExperience = await Experience.findByPk(experienceId, {include: [Category, Package]});
     return res.status(200).send(selectedExperience);
+
   } catch (err) {
     res.status(400).json({error: err.message});
   }
 });
 
 router.post("/", async (req, res) => {
+
   const {name, price, description, image, video, duration, stock, score, categoryId, packageId} = req.body;
   if (!name) return res.status(201).send("You must enter a name");
   try {
@@ -36,6 +41,8 @@ router.post("/", async (req, res) => {
     return res.status(404).json({error: err.message});
   }
 });
+
+
 
 router.delete('/:experienceId', async (req, res) => {
   const {experienceId} = req.params;

@@ -7,6 +7,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
+
     if(name) {
       let searchedPackage = await Package.findAll({where: {
         [Op.or]: [
@@ -21,6 +22,7 @@ router.get("/", async (req, res) => {
     } else {
       const allPackages = await Package.findAll({include: [City, Experience]});
       return res.status(200).send(allPackages);
+
     }
   } catch (err) {
     res.status(400).json({error: err.message});
@@ -30,8 +32,10 @@ router.get("/", async (req, res) => {
 router.get("/:packageId", async (req, res) => {
   const { packageId } = req.params;
   try {
+
     const selectedPackage = await Package.findByPk(packageId, {include: [City, Experience]});
     return res.status(200).send(selectedPackage);
+
   } catch (err) {
     res.status(400).json({error: err.message});
   }
@@ -44,6 +48,7 @@ router.post("/", async (req, res) => {
       const newPackage = await Package.create({name, price, description, image, video, duration, stock, score});
       const selectedCity = await City.findByPk(cityId);
       newPackage.setCity(selectedCity);
+
       return res.status(201).json(newPackage);
     } catch (err) {
       return res.status(404).json({error: err.message});

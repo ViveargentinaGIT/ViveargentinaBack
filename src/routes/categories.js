@@ -16,6 +16,7 @@ router.get("/:categoryId", async (req, res) => {
   const { categoryId } = req.params;
   const selectedCategory = await Category.findByPk(categoryId, {include: Experience});
   try {
+
     if (selectedCategory) return res.status(200).send(selectedCategory);
     return res.status(201).send("There are no region with this ID");
   } catch (err) {
