@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       description: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT("medium"),
         allowNull: false,
       },
       image: {
