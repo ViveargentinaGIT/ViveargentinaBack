@@ -12,9 +12,21 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(250),
       allowNull: false,
     },
+    subTitle: {
+      type: DataTypes.STRING,
+      // allowNull: false,
+    },
     description: {
       type: DataTypes.STRING,
       // allowNull: false,
+    },
+    score: {
+      type: DataTypes.FLOAT,
+      validate: {
+          min: 1,
+          max: 5
+      },
+      allowNull: false
     },
     image: {
       type: DataTypes.STRING,
@@ -24,5 +36,5 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       // allowNull: false,
     },
-  });
+  }, {timestamps: false});
 };

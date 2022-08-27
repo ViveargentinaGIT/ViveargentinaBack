@@ -7,7 +7,6 @@ const router = Router();
 router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
-
     if(name) {
       let searchedPackage = await Package.findAll({where: {
         [Op.or]: [
@@ -60,6 +59,17 @@ router.delete('/:packageId', async (req, res) => {
   try {
     await Package.destroy({where: {id: packageId}});
     res.status(200).send('Package deleted successfully')
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
+router.put('/', async (req, res) => {
+  const {packageId} = req.query;
+  const { name, description, image, video, price, duration, stock, score, cityId } = req.body;
+  try {
+    Package.update({name, description, image, video, price, duration, stock, score, cityId}, {where: {id: packageId}});
+    res.status(200).send('Package updated successfully');
   } catch (err) {
     res.status(404).json({error: err.message});
   }

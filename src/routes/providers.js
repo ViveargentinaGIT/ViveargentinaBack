@@ -47,4 +47,15 @@ router.delete('/:providerId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const {providerId} = req.query;
+  const { name, email, password } = req.body;
+  try {
+    Provider.update({name, email, password}, {where: {id: providerId}});
+    res.status(200).send('Provider updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;

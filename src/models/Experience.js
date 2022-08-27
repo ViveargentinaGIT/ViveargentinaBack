@@ -13,8 +13,12 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING(250),
             allowNull: false
         },
+        subTitle: {
+            type: DataTypes.STRING,
+            // allowNull: false,
+        },
         price: { 
-            type: DataTypes.INTEGER,
+            type: DataTypes.FLOAT,
             allowNull: false
         },
         description: {
@@ -38,7 +42,11 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         score: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
+            validate: {
+                min: 1,
+                max: 5
+            },
             allowNull: false
         },
         disabled: {

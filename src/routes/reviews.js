@@ -35,4 +35,15 @@ router.delete('/:reviewId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const { reviewId } = req.query;
+  const { text, date, userId } = req.body;
+  try {
+    Review.update({text, date, userId}, {where: {id: reviewId}});
+    res.status(200).send('Review updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;
