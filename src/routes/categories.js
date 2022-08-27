@@ -3,15 +3,6 @@ const { Category, Experience } = require("../database");
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const categories = await Category.findAll({ include: Experience });
-    return res.status(200).send(categories);
-  } catch (err) {
-    res.status(400).send("An error ocurred while searching for the regions");
-  }
-});
-
 router.get("/:categoryId", async (req, res) => {
   const { categoryId } = req.params;
   const selectedCategory = await Category.findByPk(categoryId, {include: Experience});
@@ -23,6 +14,17 @@ router.get("/:categoryId", async (req, res) => {
     res.status(400).send("An error ocurred while searching for the region");
   }
 });
+
+router.get("/", async (req, res) => {
+  try {
+    const categories = await Category.findAll({ include: Experience });
+    return res.status(200).send(categories);
+  } catch (err) {
+    res.status(400).send("An error ocurred while searching for the regions");
+  }
+});
+
+
 
 router.post("/", async (req, res) => {
   const { name } = req.body;
