@@ -5,57 +5,45 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const regions = await Region.findAll({
-      include: [
-        {
-          model: City,
-        },
-      ],
-    });
 
-    if (regions.length > 0) return res.status(200).send(regions);
-    else {
-      return res.status(201).send("There are no regions yet");
-    }
+    const allRegions = await Region.findAll({include: City});
+    return res.status(200).json(allRegions);
+
   } catch (err) {
-    console.log(err);
-    res.status(400).send("An error ocurred while searching for the regions");
+    res.status(400).json({error: err.message});
   }
 });
 
-router.get("/:regionID", async (req, res) => {
+router.get("/:regionId", async (req, res) => {
+  const { regionId } = req.params;
   try {
-    const { regionID } = req.params;
-    const selectedRegion = await Region.findByPk(regionID, { include: City });
-    console.log(selectedRegion);
-    if (selectedRegion) return res.status(200).send(selectedRegion);
-    else {
-      return res.status(201).send("There are no region with this ID");
-    }
+
+    const selectedRegion = await Region.findByPk(regionId, {include: City});
+    return res.status(200).send(selectedRegion);
+
   } catch (err) {
-    console.log(err);
-    res.status(400).send("An error ocurred while searching for the region");
+    res.status(400).json({error: err.message});
   }
 });
 
 router.post("/", async (req, res) => {
   const { name } = req.body;
-  if (!name) {
-    return res
-      .status(201)
-      .send("You must enter a name to create the new region");
-  } else {
-    try {
-      const newRegion = await Region.create({
-        name: name.toLowerCase(),
-      });
-      return res.status(201).json(newRegion);
-    } catch (err) {
-      console.log(err);
-      return res
-        .status(404)
-        .send("An error ocurred in the creation of the region");
-    }
+  if (!name) return res.status(404).send("You must enter a name to create a new region");
+  try {
+    const newRegion = await Region.create({name});
+    return res.status(201).json(newRegion);
+  } catch (err) {
+    return res.status(404).json({error: err.message});
+  }
+});
+
+router.delete('/:regionId', async (req, res) => {
+  const {regionId} = req.params;
+  try {
+    await Region.destroy({where: {id: regionId}});
+    res.status(200).send('Region deleted successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
   }
 });
 

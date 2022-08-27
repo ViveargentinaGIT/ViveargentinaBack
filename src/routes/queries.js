@@ -5,40 +5,33 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const queries = await Query.findAll({
-      include: User,
-    });
-    if (queries.length > 0) return res.status(200).send(queries);
-    else {
-      return res.status(201).send("There are no queries yet");
-    }
+    const allQueries = await Query.findAll({include: User});
+    return res.status(200).send(allQueries);
   } catch (err) {
-    console.log(err);
-    res.status(400).send("There was a problem with your search");
+    res.status(400).json({error: err.message});
   }
 });
 
 router.post("/", async (req, res) => {
   const { text, date, userId } = req.body;
-  if (!text || !date) {
-    return res.status(201).send("You must enter a text and date");
-  } else {
-    try {
-      const newQuery = await Query.create({
-        text,
-        date,
-      });
+  if (!text || !date) return res.status(201).send("You must enter a text and date");
+  try {
+    const newQuery = await Query.create({text, date});
+    const selectedUser = await User.findByPk(userId);
+    newQuery.setUser(selectedUser);
+    return res.status(201).json(newQuery);
+  } catch (err) {
+    return res.status(404).json({error: err.message});
+  }
+});
 
-      const selectedUser = await User.findByPk(userId);
-      newQuery.addUser(selectedUser);
-
-      return res.status(201).json(newQuery);
-    } catch (err) {
-      console.log(err);
-      return res
-        .status(404)
-        .send("There was an error in the creation of the query");
-    }
+router.delete('/:queryId', async (req, res) => {
+  const {queryId} = req.params;
+  try {
+    await Query.destroy({where: {id: queryId}});
+    res.status(200).send('Query deleted successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
   }
 });
 
