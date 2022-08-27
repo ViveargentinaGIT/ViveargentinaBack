@@ -45,4 +45,15 @@ router.delete('/:categoryId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const {categoryId} = req.query;
+  const { name } = req.body;
+  try {
+    Category.update({name}, {where: {id: categoryId}});
+    res.status(200).send('Category updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;

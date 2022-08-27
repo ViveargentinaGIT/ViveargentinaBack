@@ -35,4 +35,15 @@ router.delete('/:queryId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const { queryId } = req.query;
+  const { text, date, userId } = req.body;
+  try {
+    Query.update({text, date, userId}, {where: {id: queryId}});
+    res.status(200).send('Query updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;

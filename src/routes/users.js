@@ -33,4 +33,15 @@ router.delete('/:userId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const { userId } = req.query;
+  const { name, email, password } = req.body;
+  try {
+    User.update({name, email, password}, {where: {id: userId}});
+    res.status(200).send('User updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;

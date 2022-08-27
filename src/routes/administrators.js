@@ -33,4 +33,15 @@ router.delete('/:adminId', async (req, res) => {
   }
 });
 
+router.put('/', async (req, res) => {
+  const { adminId } = req.query;
+  const { name, email, password } = req.body;
+  try {
+    Administrator.update({name, email, password}, {where: {id: adminId}});
+    res.status(200).send('Administrator updated successfully');
+  } catch (err) {
+    res.status(404).json({error: err.message});
+  }
+});
+
 module.exports = router;
