@@ -12,4 +12,4 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING(250),
             allowNull: false
         }
-    })}
+    },{timestamps: false})}
