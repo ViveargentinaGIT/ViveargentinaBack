@@ -45,7 +45,8 @@ router.post("/", async (req, res) => {
     newCity.setRegion(selectedRegion);
     return res.status(201).json(newCity);
   } catch (err) {
-    return res.status(404).send("There was an error in the creation of the city");
+    // return res.status(404).send("There was an error in the creation of the city");
+    res.status(404).json({error: err.message})
   }
 });
 
