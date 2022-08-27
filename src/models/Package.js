@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
         // allowNull: false
       },
       description: {
-        type: DataTypes.STRING(250),
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       image: {
