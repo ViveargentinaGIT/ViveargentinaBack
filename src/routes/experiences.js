@@ -3,6 +3,16 @@ const { Category, Experience, Package } = require("../database");
 
 const router = Router();
 
+router.get("/:experienceId", async (req, res) => {
+  const { experienceId } = req.params;
+  try {
+    const selectedExperience = await Experience.findByPk(experienceId, {include: [Category, Package]});
+    return res.status(200).send(selectedExperience);
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
 router.get("/", async (req, res) => {
   const {name} = req.query;
   try {
@@ -25,15 +35,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:experienceId", async (req, res) => {
-  const { experienceId } = req.params;
-  try {
-    const selectedExperience = await Experience.findByPk(experienceId, {include: [Category, Package]});
-    return res.status(200).send(selectedExperience);
-  } catch (err) {
-    res.status(400).json({error: err.message});
-  }
-});
+
 
 router.post("/", async (req, res) => {
 

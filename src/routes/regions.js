@@ -3,15 +3,6 @@ const { Region, City } = require("../database");
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const allRegions = await Region.findAll({include: City});
-    return res.status(200).json(allRegions);
-  } catch (err) {
-    res.status(400).json({error: err.message});
-  }
-});
-
 router.get("/:regionId", async (req, res) => {
   const { regionId } = req.params;
   try {
@@ -21,6 +12,17 @@ router.get("/:regionId", async (req, res) => {
     res.status(400).json({error: err.message});
   }
 });
+
+router.get("/", async (req, res) => {
+  try {
+    const allRegions = await Region.findAll({include: City});
+    return res.status(200).json(allRegions);
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
+
 
 router.post("/", async (req, res) => {
   const { name } = req.body;

@@ -4,6 +4,16 @@ const { Op } = require('sequelize');
 
 const router = Router();
 
+router.get("/:cityId", async (req, res) => {
+  const { cityId } = req.params;
+  try {
+    const searchedCity = await City.findAll({where: {id: cityId}}, {include: [Region, Package]});
+    return res.status(200).send(searchedCity);
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
 router.get("/", async (req, res) => {
   const {name} = req.query;
   try {
@@ -26,15 +36,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:cityId", async (req, res) => {
-  const { cityId } = req.params;
-  try {
-    const searchedCity = await City.findAll({where: {id: cityId}}, {include: [Region, Package]});
-    return res.status(200).send(searchedCity);
-  } catch (err) {
-    res.status(400).json({error: err.message});
-  }
-});
+
 
 router.post("/", async (req, res) => {
   const { name, subTitle, score, description, image, video, regionId } = req.body;

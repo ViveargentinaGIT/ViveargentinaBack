@@ -4,6 +4,18 @@ const { Op } = require('sequelize');
 
 const router = Router();
 
+router.get("/:packageId", async (req, res) => {
+  const { packageId } = req.params;
+  try {
+
+    const selectedPackage = await Package.findByPk(packageId, {include: [City, Experience]});
+    return res.status(200).send(selectedPackage);
+
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
 router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
@@ -28,17 +40,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:packageId", async (req, res) => {
-  const { packageId } = req.params;
-  try {
 
-    const selectedPackage = await Package.findByPk(packageId, {include: [City, Experience]});
-    return res.status(200).send(selectedPackage);
-
-  } catch (err) {
-    res.status(400).json({error: err.message});
-  }
-});
 
 router.post("/", async (req, res) => {
   const {name, description, image, video, price, duration, stock, score, cityId} = req.body;
