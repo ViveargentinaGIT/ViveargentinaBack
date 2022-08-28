@@ -7,7 +7,7 @@ const router = Router();
 router.get("/:cityId", async (req, res) => {
   const { cityId } = req.params;
   try {
-    const searchedCity = await City.findAll({where: {id: cityId}}, {include: [Region, Package]});
+    const searchedCity = await City.findByPk(cityId, {include: [Region, Package]});
     return res.status(200).send(searchedCity);
   } catch (err) {
     res.status(400).json({error: err.message});
