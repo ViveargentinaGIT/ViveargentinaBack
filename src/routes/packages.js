@@ -43,13 +43,12 @@ router.get("/", async (req, res) => {
 
 
 router.post("/", async (req, res) => {
-  const {name, description, image, video, price, duration, stock, score, cityId} = req.body;
+  const {name, description, image, video, price, duration, stock, score, subTitle, cityId} = req.body;
   if (!name) return res.status(201).send("You must enter a name");
     try {
-      const newPackage = await Package.create({name, price, description, image, video, duration, stock, score});
+      const newPackage = await Package.create({name, price, description, image, video, duration, stock, score, subTitle});
       const selectedCity = await City.findByPk(cityId);
       newPackage.setCity(selectedCity);
-
       return res.status(201).json(newPackage);
     } catch (err) {
       return res.status(404).json({error: err.message});
