@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
       res.status(201).json(searchedCity) :
       res.status(404).send('City not found')
     } else {
-      const allCities = await City.findAll({include: Region});
+      const allCities = await City.findAll({include: [Region, Package]});
       return res.status(200).send(allCities);
     }
   } catch (err) {
