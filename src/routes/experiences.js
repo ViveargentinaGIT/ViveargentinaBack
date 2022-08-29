@@ -41,9 +41,10 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
 
   const {name, subTitle, price, description, image, video, duration, stock, score, categoryId, packageId} = req.body;
+  console.log(price, stock, score)
   if (!name) return res.status(201).send("You must enter a name");
   try {
-    const newExperience = await Experience.create({name, price, subTitle, description, image, video, duration, stock, score});
+    const newExperience = await Experience.create({name, price: parseInt(price), subTitle, description, image, video, duration, stock: parseInt(stock), score: parseInt(score)});
     const selectedCategory = await Category.findByPk(categoryId);
     const selectedPackage = await Package.findByPk(packageId);
     newExperience.setCategory(selectedCategory);
