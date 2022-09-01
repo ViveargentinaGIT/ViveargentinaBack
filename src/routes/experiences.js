@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
 
   const {name, subTitle, price, description, image, duration, stock, score, categoryId, packageId} = req.body;
   console.log(price, stock, score)
-  if (!name || !subTitle || !price || !description || !image || !duration) return res.status(201).send("You must complete the form");
+  if (!name || !subTitle || !price || !description || !image || !duration || !categoryId || !packageId) return res.status(201).send("You must complete the form");
   try {
     const newExperience = await Experience.create({name, price: parseInt(price), subTitle, description, image, duration, stock: parseInt(stock), score: parseInt(score)});
     const selectedCategory = await Category.findByPk(categoryId);
