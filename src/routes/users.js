@@ -93,6 +93,7 @@ router.put("/:userId", async (req, res) => {
     administrator,
     provider,
     provider_requested,
+    disabled,
   } = req.body;
   try {
     User.update(
@@ -106,6 +107,7 @@ router.put("/:userId", async (req, res) => {
         administrator,
         provider,
         provider_requested,
+        disabled,
       },
       { where: { id: userId } }
     );

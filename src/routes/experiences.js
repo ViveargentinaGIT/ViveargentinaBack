@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
       let searchedExperience = await Experience.findAll({
         where: {
           [Op.or]: [
-            { name: { [Op.substring]: name } },
+            { name: { [Op.substring]: name.toLowerCase() } },
             {
               name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
             },
@@ -68,7 +68,7 @@ router.post("/", async (req, res) => {
     return res.status(201).send("You must complete the form");
   try {
     const newExperience = await Experience.create({
-      name,
+      name: name.toLowerCase(),
       description,
       image,
       status,

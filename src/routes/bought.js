@@ -91,7 +91,7 @@ router.post("/packages", async (req, res) => {
           },
         }
       );
-      return res.status(201).send("Bought added successfully");
+      return res.status(201).send("Bought successfully");
     } else {
       let newBought = await Reservation_package.create({
         bought: true,

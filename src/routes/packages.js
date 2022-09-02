@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
       let searchedPackage = await Package.findAll({
         where: {
           [Op.or]: [
-            { name: { [Op.substring]: name } },
+            { name: { [Op.substring]: name.toLowerCase() } },
             { name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) } },
             { name: name[0].toUpperCase() + name.slice(1) },
           ],
@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
   if (!name) return res.status(201).send("You must enter a name");
   try {
     const newPackage = await Package.create({
-      name,
+      name: name.toLowerCase(),
       description,
       image,
       status,

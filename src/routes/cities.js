@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
       let searchedCity = await City.findAll({
         where: {
           [Op.or]: [
-            { name: { [Op.substring]: name } },
+            { name: { [Op.substring]: name.toLowerCase() } },
             {
               name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
             },
@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
       .send("You must enter a name, score and a description");
   try {
     let newCity = await City.create({
-      name,
+      name: name.toLowerCase(),
       description,
       image,
       video,
