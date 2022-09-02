@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     dates: {
       type: DataTypes.STRING,
@@ -18,11 +18,11 @@ module.exports = (sequelize) => {
     },
     passengers: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
     },
     total: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
     },
     favorite: {
       type: DataTypes.BOOLEAN,

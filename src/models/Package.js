@@ -20,11 +20,11 @@ module.exports = (sequelize) => {
       },
       price: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        //  allowNull: false,
       },
       description: {
         type: DataTypes.TEXT("medium"),
-        allowNull: false,
+        //  allowNull: false,
       },
       image: {
         type: DataTypes.TEXT("medium"),
@@ -33,7 +33,7 @@ module.exports = (sequelize) => {
 
       duration: {
         type: DataTypes.STRING,
-        allowNull: false,
+        //  allowNull: false,
       },
       available: {
         type: DataTypes.BOOLEAN,
@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
           min: 1,
           max: 5,
         },
-        allowNull: false,
+        //  allowNull: false,
       },
       status: {
         type: DataTypes.STRING,
