@@ -20,20 +20,18 @@ router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
     if (name) {
-      let searchedCity = await City.findAll(
-        {
-          where: {
-            [Op.or]: [
-              { name: { [Op.substring]: name } },
-              {
-                name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
-              },
-              { name: name[0].toUpperCase() + name.slice(1) },
-            ],
-          },
+      let searchedCity = await City.findAll({
+        where: {
+          [Op.or]: [
+            { name: { [Op.substring]: name } },
+            {
+              name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
+            },
+            { name: name[0].toUpperCase() + name.slice(1) },
+          ],
         },
-        { include: [Region, Package] }
-      );
+        include: [Region, Package],
+      });
       searchedCity.length > 0
         ? res.status(201).json(searchedCity)
         : res.status(404).send("City not found");

@@ -13,32 +13,18 @@ const router = Router();
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const favoriteExperiences = await Reservation_experience.findAll(
-      {
-        where: {
-          [Op.and]: [{ userId: userId }, { favorite: true }],
-        },
+    const favoriteExperiences = await Reservation_experience.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { favorite: true }],
       },
-      {
-        include: {
-          model: Experience,
-          attributes: ["name"],
-          through: {
-            attributes: [],
-          },
-        },
-      }
-    );
-    const favoritePackages = await Reservation_package.findAll(
-      {
-        where: {
-          [Op.and]: [{ userId: userId }, { favorite: true }],
-        },
+      // include: User,
+    });
+    const favoritePackages = await Reservation_package.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { favorite: true }],
       },
-      {
-        include: [User, Package],
-      }
-    );
+      // include: User,
+    });
     const favoritePackagesAndExperiences =
       favoritePackages.concat(favoriteExperiences);
     return res.status(200).send(favoritePackagesAndExperiences);

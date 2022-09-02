@@ -20,20 +20,18 @@ router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
     if (name) {
-      let searchedExperience = await Experience.findAll(
-        {
-          where: {
-            [Op.or]: [
-              { name: { [Op.substring]: name } },
-              {
-                name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
-              },
-              { name: name[0].toUpperCase() + name.slice(1) },
-            ],
-          },
+      let searchedExperience = await Experience.findAll({
+        where: {
+          [Op.or]: [
+            { name: { [Op.substring]: name } },
+            {
+              name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
+            },
+            { name: name[0].toUpperCase() + name.slice(1) },
+          ],
         },
-        { include: [Category, Package] }
-      );
+        include: [Category, Package],
+      });
       searchedExperience.length > 0
         ? res.status(201).json(searchedExperience)
         : res.status(404).send("Experience not found");
@@ -50,7 +48,16 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const {
-    name /*, subTitle, price, description, image, duration, stock, score,*/,
+    name,
+    description,
+    image,
+    status,
+    price,
+    duration,
+    available,
+    score,
+    subTitle,
+    dates,
     categoryId,
     packageId,
   } = req.body;
@@ -62,13 +69,15 @@ router.post("/", async (req, res) => {
   try {
     const newExperience = await Experience.create({
       name,
-      /*price: parseInt(price),
-      subTitle,
       description,
       image,
+      status,
+      price,
       duration,
-      stock: parseInt(stock),
-      score: parseInt(score),*/
+      available,
+      score,
+      subTitle,
+      dates,
     });
     const selectedCategory = await Category.findByPk(categoryId);
     const selectedPackage = await Package.findByPk(packageId);
@@ -94,14 +103,15 @@ router.put("/", async (req, res) => {
   const { experienceId } = req.query;
   const {
     name,
-    subTitle,
-    price,
     description,
     image,
-    video,
+    status,
+    price,
     duration,
-    stock,
+    available,
     score,
+    subTitle,
+    dates,
     categoryId,
     packageId,
   } = req.body;
@@ -109,14 +119,15 @@ router.put("/", async (req, res) => {
     Experience.update(
       {
         name,
-        subTitle,
-        price,
         description,
         image,
-        video,
+        status,
+        price,
         duration,
-        stock,
+        available,
         score,
+        subTitle,
+        dates,
         categoryId,
         packageId,
       },

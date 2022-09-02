@@ -13,32 +13,19 @@ const router = Router();
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const boughtExperiences = await Reservation_experience.findAll(
-      {
-        where: {
-          [Op.and]: [{ userId: userId }, { bought: true }],
-        },
+    const boughtExperiences = await Reservation_experience.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { bought: true }],
       },
-      {
-        include: {
-          model: Experience,
-          attributes: ["name"],
-          through: {
-            attributes: [],
-          },
-        },
-      }
-    );
-    const boughtPackages = await Reservation_package.findAll(
-      {
-        where: {
-          [Op.and]: [{ userId: userId }, { bought: true }],
-        },
+
+      //  include: [User, Experience],
+    });
+    const boughtPackages = await Reservation_package.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { bought: true }],
       },
-      {
-        include: [User, Package],
-      }
-    );
+      // include: [User, Package],
+    });
     const boughtPackagesAndExperiences =
       boughtPackages.concat(boughtExperiences);
     return res.status(200).send(boughtPackagesAndExperiences);
