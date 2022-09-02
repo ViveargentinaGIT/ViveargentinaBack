@@ -1,6 +1,0 @@
-POST https://localhost:3001/users HTTP/1.1
-content-type: application/json
-
-{
-    "first_name": "sample",
-}
