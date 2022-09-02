@@ -16,7 +16,11 @@ module.exports = (sequelize) => {
       },
       subTitle: {
         type: DataTypes.STRING,
-        // allowNull: false
+        // allowNull: false,
+      },
+      price: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
       },
       description: {
         type: DataTypes.TEXT("medium"),
@@ -26,17 +30,15 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT("medium"),
         // allowNull: false
       },
-      video: {
+
+      duration: {
         type: DataTypes.STRING,
-        // allowNull: true
-      },
-      price: {
-        type: DataTypes.FLOAT,
         allowNull: false,
       },
-      stock: {
-        type: DataTypes.INTEGER,
-        // allowNull: false
+      available: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       score: {
         type: DataTypes.FLOAT,
@@ -46,9 +48,13 @@ module.exports = (sequelize) => {
         },
         allowNull: false,
       },
-      duration: {
+      status: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false
+      },
+      dates: {
+        type: DataTypes.STRING,
+        // allowNull: false
       },
     },
     { timestamps: false }
