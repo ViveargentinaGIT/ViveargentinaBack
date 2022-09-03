@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
   if (!name) return res.status(201).send("You must enter a name");
   try {
     const newPackage = await Package.create({
-      name: name.toLowerCase(),
+      name: name,
       description,
       image,
       status,

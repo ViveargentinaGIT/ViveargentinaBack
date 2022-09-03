@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
       .send("You must enter a name, score and a description");
   try {
     let newCity = await City.create({
-      name: name.toLowerCase(),
+      name: name,
       description,
       image,
       video,
