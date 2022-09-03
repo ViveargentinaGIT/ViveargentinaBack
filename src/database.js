@@ -4,15 +4,18 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 
-const sequelize = new Sequelize("postgres://hyrnrcsr:trMyaT4KZ_TyUxfOQJdBGMX-rO5xI6Ch@jelani.db.elephantsql.com/hyrnrcsr", {
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  },
-  logging: false
-});
+const sequelize = new Sequelize(
+  "postgres://hyrnrcsr:trMyaT4KZ_TyUxfOQJdBGMX-rO5xI6Ch@jelani.db.elephantsql.com/hyrnrcsr",
+  {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+    logging: false,
+  }
+);
 
 const basename = path.basename(__filename);
 
@@ -41,19 +44,8 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const {
-  Administrator,
-  Category,
-  Experience,
-  Package,
-  Provider,
-  City,
-  Query,
-  Region,
-  Reservation,
-  Review,
-  User,
-} = sequelize.models;
+const { Category, Experience, Package, City, Query, Region, Review, User } =
+  sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
@@ -84,12 +76,26 @@ User.hasMany(Review, {
   foreignKey: "userId",
 });
 Review.belongsTo(User);
-User.belongsToMany(Package, { through: "reservation" });
-Package.belongsToMany(User, { through: "reservation" });
-Provider.belongsToMany(Experience, { through: "provider_experience" });
-Experience.belongsToMany(Provider, { through: "provider_experience" });
-Reservation.belongsToMany(Experience, { through: "reservation_experience" });
-Experience.belongsToMany(Reservation, { through: "reservation_experience" });
+User.belongsToMany(Package, {
+  through: "reservation_package",
+  foreignKey: "userId",
+});
+Package.belongsToMany(User, {
+  through: "reservation_package",
+  foreignKey: "packageId",
+});
+User.belongsToMany(Experience, {
+  through: "provider_experience",
+});
+Experience.belongsToMany(User, {
+  through: "provider_experience",
+});
+User.belongsToMany(Experience, {
+  through: "reservation_experience",
+});
+Experience.belongsToMany(User, {
+  through: "reservation_experience",
+});
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

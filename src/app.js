@@ -1,14 +1,14 @@
 const express = require("express");
 const regions = require("./routes/regions.js");
-const administrators = require("./routes/administrators.js");
 const categories = require("./routes/categories.js");
 const experiences = require("./routes/experiences.js");
 const package = require("./routes/packages.js");
-const provider = require("./routes/providers.js");
 const user = require("./routes/users.js");
 const city = require("./routes/cities.js");
 const query = require("./routes/queries.js");
 const review = require("./routes/reviews.js");
+const favorite = require("./routes/favorites.js");
+const bought = require("./routes/bought.js");
 
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -31,15 +31,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/administrators", administrators);
 app.use("/regions", regions);
 app.use("/categories", categories);
 app.use("/experiences", experiences);
 app.use("/packages", package);
-app.use("/providers", provider);
+app.use("/favorites", favorite);
 app.use("/users", user);
 app.use("/queries", query);
 app.use("/reviews", review);
 app.use("/cities", city);
+app.use("/bought", bought);
 
 module.exports = app;

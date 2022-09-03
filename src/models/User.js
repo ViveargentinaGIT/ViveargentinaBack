@@ -10,19 +10,46 @@ module.exports = (sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
-      name: {
+      first_name: {
         type: DataTypes.STRING(250),
         allowNull: false,
       },
+      last_name: {
+        type: DataTypes.STRING(250),
+        // allowNull: false,
+      },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        //  allowNull: false,
       },
-      registered: {
+      birth_date: {
+        type: DataTypes.STRING,
+        // allowNull: false,
+      },
+      photo: {
+        type: DataTypes.STRING,
+        // allowNull: false,
+      },
+      administrator: {
+        type: DataTypes.BOOLEAN,
+        // allowNull: false,
+        defaultValue: false,
+      },
+      provider: {
+        type: DataTypes.BOOLEAN,
+        // allowNull: false,
+        defaultValue: false,
+      },
+      disabled: {
+        type: DataTypes.BOOLEAN,
+        // allowNull: false,
+        defaultValue: false,
+      },
+      provider_requested: {
         type: DataTypes.BOOLEAN,
         // allowNull: false,
         defaultValue: false,
