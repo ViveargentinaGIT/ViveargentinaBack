@@ -5,15 +5,15 @@ const fs = require("fs");
 const path = require("path");
 
 const sequelize = new Sequelize(
-  "postgres://postgres:rosso504@localhost:5432/viveargentina",
+  "postgres://hyrnrcsr:trMyaT4KZ_TyUxfOQJdBGMX-rO5xI6Ch@jelani.db.elephantsql.com/hyrnrcsr",
   {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     logging: false,
-    /* dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  },*/
   }
 );
 
