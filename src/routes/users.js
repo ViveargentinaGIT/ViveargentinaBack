@@ -46,19 +46,22 @@ router.post("/singin", async (req, res)=>{
 
 router.post("/login", async (req, res)=>{
   const {email, password}= req.body;
+  console.log("before try catch:" + password)
   try {
-    const user = await User.findAll({
+    let user = await User.findAll({
       where:{
         email: email
       }
     })
+    user = user[0].dataValues
+    console.log(user)
     if(user.length === 0){
       res.status(404).send('user not found')
     }
-    if(await bcrypt.compare(password, user[0].password)){
-      const id = user[0].id
+    if(await bcrypt.compare(password, user.password)){
+      const id = user.id
 			const accessToken = jwt.sign(id, "henryboom")
-      res.status(201).json({accessToken: accessToken, auth: true, user: user[0]})
+      res.status(201).json({accessToken: accessToken, auth: true, user: user})
 		} else{
 			res.send('not allowed')
 		}
