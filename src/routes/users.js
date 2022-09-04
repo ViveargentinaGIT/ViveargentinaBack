@@ -46,15 +46,14 @@ router.post("/singin", async (req, res)=>{
 
 router.post("/login", async (req, res)=>{
   const {email, password}= req.body;
-  console.log("before try catch:" + password)
   try {
     let user = await User.findAll({
       where:{
         email: email
-      }
+      },
+      include: [Query, Review, Experience, Package]
     })
     user = user[0].dataValues
-    console.log(user)
     if(user.length === 0){
       res.status(404).send('user not found')
     }
