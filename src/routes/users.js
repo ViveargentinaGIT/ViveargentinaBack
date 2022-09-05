@@ -17,6 +17,38 @@ function authenticateToken(req, res, next){
   })
 }
 
+router.post("/google_login", async (req, res)=>{
+  const {first_name, last_name, email, password, photo} = req.body;
+  try {
+    const user = await User.findAll({
+      where:{
+        email: email
+      },
+      include: [Query, Review, Experience, Package]
+    })
+    if(user.length===0){
+      await User.create({
+        first_name,
+        last_name,
+        email,
+        password,
+        photo
+      });
+      const newUser = await User.findAll({
+        where:{
+          email: email
+        },
+        include: [Query, Review, Experience, Package]
+      })
+      return res.status(201).json(newUser[0]);
+    }else{
+      return res.status(201).json(user[0]);
+    }
+  } catch (error) {
+    res.status(401).send('something went wrong')
+  }
+})
+
 router.post("/singin", async (req, res)=>{
   const {first_name, last_name, email, password} = req.body;
   if (!first_name){
