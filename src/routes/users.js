@@ -34,6 +34,7 @@ router.post("/google_login", async (req, res)=>{
         password,
         photo
       });
+      console.log("enters if")
       const newUser = await User.findAll({
         where:{
           email: email
@@ -41,16 +42,15 @@ router.post("/google_login", async (req, res)=>{
         include: [Query, Review, Experience, Package]
       })
       const id = newUser[0].id
-			const accessToken = jwt.sign(id, "henryboom")
+			const accessToken = await jwt.sign(id, "henryboom")
       return res.status(201).json({accessToken: accessToken, auth: true, user: newUser[0]})
     }else{
       const id = user[0].id
-			const accessToken = jwt.sign(id, "henryboom")
-      res.status(201).json({accessToken: accessToken, auth: true, user: user[0]})
-      return res.status(201).json(user[0]);
+			const accessToken = await jwt.sign(id, "henryboom")
+      return res.status(201).json({accessToken: accessToken, auth: true, user: user[0]})
     }
   } catch (error) {
-    res.status(401).send('something went wrong')
+    return res.status(401).send('something went wrong')
   }
 })
 
@@ -94,7 +94,7 @@ router.post("/login", async (req, res)=>{
     }
     if(await bcrypt.compare(password, user.password)){
       const id = user.id
-			const accessToken = jwt.sign(id, "henryboom")
+			const accessToken = await jwt.sign(id, "henryboom")
       user.password = password;
       res.status(201).json({accessToken: accessToken, auth: true, user: user})
 		} else{
