@@ -18,7 +18,7 @@ function authenticateToken(req, res, next){
 }
 
 router.post("/singin", async (req, res)=>{
-  const {first_name, last_name, email, password, birth_date, photo} = req.body;
+  const {first_name, last_name, email, password} = req.body;
   if (!first_name){
     return res.status(404).send("You must enter a name, email and password to create a new user");
   }
@@ -35,8 +35,6 @@ router.post("/singin", async (req, res)=>{
       last_name,
       email,
       password: hashedPassword,
-      birth_date,
-      photo,
     });
     return res.status(201).json(newUser);
   } catch (error) {
