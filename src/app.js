@@ -9,6 +9,7 @@ const query = require("./routes/queries.js");
 const review = require("./routes/reviews.js");
 const favorite = require("./routes/favorites.js");
 const bought = require("./routes/bought.js");
+const mercadopago = require("./routes/mercadopago.js");
 
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -41,5 +42,6 @@ app.use("/queries", query);
 app.use("/reviews", review);
 app.use("/cities", city);
 app.use("/bought", bought);
+app.use("/mercadopago", mercadopago);
 
 module.exports = app;
