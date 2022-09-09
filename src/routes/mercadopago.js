@@ -21,16 +21,21 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { pax, date, price, name } = req.body;
+  const arrayItems = req.body;
+  const arrayPreference = arrayItems.map((i) => {
+    return {
+      title: i.name,
+      unit_price: parseInt(i.price),
+      quantity: parseInt(i.pax),
+    };
+  });
+  console.log(arrayPreference);
+
   let preference = {
-    items: [
-      {
-        title: name,
-        unit_price: price,
-        quantity: pax,
-      },
-    ],
+    items: arrayPreference,
   };
+
+  /**/
 
   mercadopago.preferences
     .create(preference)
