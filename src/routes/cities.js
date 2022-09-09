@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { Package, City, Region } = require("../database");
+const { Package, City, Region, Experience } = require("../database");
 const { Op } = require("sequelize");
 
 const router = Router();
