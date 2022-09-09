@@ -1,7 +1,8 @@
 const { Router } = require("express");
 const { User, Query, Review, Experience, Package } = require("../database");
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { transporter } = require("../utils/utils");
 
 const router = Router();
 
@@ -73,10 +74,31 @@ router.post("/singin", async (req, res)=>{
       email,
       password: hashedPassword,
     });
-    return res.status(201).json(newUser);
+    const accessToken = await jwt.sign(newUser.id, "henryboom")
+    await transporter.sendMail({
+      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      to: newUser.email, // list of receivers
+      subject: "Viveargentina email confirmation", // Subject line
+      html: `<h1>ExperianceViveArgentina! confirmation email</h1>
+            <p>If you have not register to experienceviveargentina please ignore this email</p>
+            <p>Click the link below to complete the registration</p>
+            <buttom><a href="https://experienceviveargentina.vercel.app/verify/${newUser.id}/${accessToken}">Confirm Registration</a></buttom>
+            <p>${accessToken}</p>`, // html body
+    })
+    res.status(200).send(`An email was send to ${newUser.email}. Check the email to complete the registration`)
   } catch (error) {
     res.status(500).send('error')
   }
+})
+
+router.post("/verify/:id", authenticateToken, async (req, res)=>{
+  User.update(
+    {
+      birth_date: "active",
+    },
+    { where: { id: req.params.id } }
+  );
+  res.redirect('https://experienceviveargentina.vercel.app/home')
 })
 
 router.post("/login", async (req, res)=>{
@@ -91,6 +113,9 @@ router.post("/login", async (req, res)=>{
     user = user[0].dataValues
     if(user.length === 0){
       res.status(404).send('user not found')
+    }
+    if(user[0].birth_date === null){
+      res.status(400).send('Please confirm your email to login')
     }
     if(await bcrypt.compare(password, user.password)){
       const id = user.id
