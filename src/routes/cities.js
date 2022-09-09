@@ -16,25 +16,18 @@ router.get("/:cityId", async (req, res) => {
   }
 });
 
+const removeAccents = (str) => {
+ return str.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
 router.get("/", async (req, res) => {
-  const { name } = req.query;
+  let { name } = req.query;
   try {
     if (name) {
-      let searchedCity = await City.findAll({
-        where: {
-          [Op.or]: [
-            { name: { [Op.substring]: name.toLowerCase() } },
-            {
-              name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) },
-            },
-            { name: name[0].toUpperCase() + name.slice(1) },
-          ],
-        },
-        include: [Region, Package],
-      });
-      searchedCity.length > 0
-        ? res.status(201).json(searchedCity)
-        : res.status(404).send("City not found");
+      let citiesArray = await City.findAll({include: [Region, Package]});
+      let searchedCities = citiesArray.filter(e => removeAccents(e.name).toLowerCase().includes(removeAccents(name).toLowerCase()))
+      console.log(searchedCities)
+      res.status(201).json(searchedCities)
     } else {
       const allCities = await City.findAll({ include: [Region, Package] });
       return res.status(200).send(allCities);

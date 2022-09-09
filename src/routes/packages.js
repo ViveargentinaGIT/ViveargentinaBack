@@ -16,23 +16,19 @@ router.get("/:packageId", async (req, res) => {
   }
 });
 
+const removeAccents = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+ }
+
 router.get("/", async (req, res) => {
   const { name } = req.query;
   try {
     if (name) {
-      let searchedPackage = await Package.findAll({
-        where: {
-          [Op.or]: [
-            { name: { [Op.substring]: name.toLowerCase() } },
-            { name: { [Op.substring]: name[0].toUpperCase() + name.slice(1) } },
-            { name: name[0].toUpperCase() + name.slice(1) },
-          ],
-        },
-        include: [City, Experience],
-      });
-      searchedPackage.length
-        ? res.status(201).json(searchedPackage)
-        : res.status(404).send("Package not found");
+      let packagesArray = await Package.findAll({include: [City, Experience]});
+      let searchedPackages = await packagesArray.filter(e => removeAccents(e.name).toLowerCase().includes(removeAccents(name).toLowerCase()))
+      // searchedPackage.length > 0 ? 
+      res.status(201).json(searchedPackages)
+      // : res.status(404).send("Package not found");
     } else {
       const allPackages = await Package.findAll({
         include: [City, Experience],
