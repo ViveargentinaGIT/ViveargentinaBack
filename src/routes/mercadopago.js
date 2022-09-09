@@ -35,12 +35,10 @@ router.post("/", async (req, res) => {
     items: arrayPreference,
   };
 
-  /**/
-
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
-      console.log(response.body.init_point);
+      console.log(response.body);
       res.redirect(response.body.init_point);
     })
     .catch(function (error) {
