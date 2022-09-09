@@ -8,7 +8,7 @@ router.get("/:cityId", async (req, res) => {
   const { cityId } = req.params;
   try {
     const searchedCity = await City.findByPk(cityId, {
-      include: [Region, Package],
+      include: [Region, {model: Package, include: [Experience]}],
     });
     return res.status(200).send(searchedCity);
   } catch (err) {
