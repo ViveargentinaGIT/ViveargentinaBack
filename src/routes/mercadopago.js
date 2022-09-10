@@ -33,13 +33,19 @@ router.post("/", async (req, res) => {
 
   let preference = {
     items: arrayPreference,
+    back_urls: {
+      success: "http://localhost:3000/home",
+      failure: "http://localhost:3000/home",
+      pending: "http://localhost:3000/home",
+    },
+    auto_return: "approved",
   };
 
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
-      console.log(response.body);
-      res.redirect(response.body.init_point);
+      console.log(response.body.id);
+      res.status(200).send(response.body.id);
     })
     .catch(function (error) {
       console.log(error);
