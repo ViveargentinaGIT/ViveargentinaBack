@@ -117,7 +117,7 @@ router.post("/login", async (req, res)=>{
     if(user.length === 0){
       res.status(404).send('user not found')
     }
-    if(user[0].birth_date === null){
+    if(user.birth_date===null){
       res.status(400).send('Please confirm your email to login')
     }
     if(await bcrypt.compare(password, user.password)){
