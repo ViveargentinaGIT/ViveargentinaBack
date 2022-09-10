@@ -20,10 +20,11 @@ function authenticateToken(req, res, next){
 
 router.post("/google_login", async (req, res)=>{
   const {first_name, last_name, email, password, photo} = req.body;
+  let googleEmail = `google@+${email}`
   try {
     const user = await User.findAll({
       where:{
-        email: email
+        email: googleEmail
       },
       include: [Query, Review, Experience, Package]
     })
@@ -31,22 +32,23 @@ router.post("/google_login", async (req, res)=>{
       await User.create({
         first_name,
         last_name,
-        email,
+        email: googleEmail,
         password,
         photo
       });
-      console.log("enters if")
       const newUser = await User.findAll({
         where:{
-          email: email
+          email: googleEmail
         },
         include: [Query, Review, Experience, Package]
       })
+      newUser.email = email;
       const id = newUser[0].id
 			const accessToken = await jwt.sign(id, "henryboom")
       return res.status(201).json({accessToken: accessToken, auth: true, user: newUser[0]})
     }else{
       const id = user[0].id
+      user[0].email = email
 			const accessToken = await jwt.sign(id, "henryboom")
       return res.status(201).json({accessToken: accessToken, auth: true, user: user[0]})
     }
@@ -92,6 +94,7 @@ router.post("/singin", async (req, res)=>{
 })
 
 router.post("/verify/:id", authenticateToken, async (req, res)=>{
+  console.log("id: "+req.params.id)
   User.update(
     {
       birth_date: "active",
