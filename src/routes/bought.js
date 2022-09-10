@@ -34,6 +34,18 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const boughtExperiences = await Reservation_experience.findAll();
+    const boughtPackages = await Reservation_package.findAll();
+    const boughtPackagesAndExperiences =
+      boughtPackages.concat(boughtExperiences);
+    return res.status(200).send(boughtPackagesAndExperiences);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.post("/experiences", async (req, res) => {
   const { experienceId, userId, pax, total, date } = req.body;
 
