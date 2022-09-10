@@ -17,14 +17,14 @@ router.get("/:userId", async (req, res) => {
       where: {
         [Op.and]: [{ userId: userId }, { bought: true }],
       },
-
-      //  include: [User, Experience],
+      //include: [User, Experience],
     });
     const boughtPackages = await Reservation_package.findAll({
       where: {
         [Op.and]: [{ userId: userId }, { bought: true }],
+
+        // include: [User, Package],
       },
-      // include: [User, Package],
     });
     const boughtPackagesAndExperiences =
       boughtPackages.concat(boughtExperiences);
