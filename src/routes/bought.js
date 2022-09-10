@@ -17,15 +17,27 @@ router.get("/:userId", async (req, res) => {
       where: {
         [Op.and]: [{ userId: userId }, { bought: true }],
       },
-
-      //  include: [User, Experience],
+      //include: [User, Experience],
     });
     const boughtPackages = await Reservation_package.findAll({
       where: {
         [Op.and]: [{ userId: userId }, { bought: true }],
+
+        // include: [User, Package],
       },
-      // include: [User, Package],
     });
+    const boughtPackagesAndExperiences =
+      boughtPackages.concat(boughtExperiences);
+    return res.status(200).send(boughtPackagesAndExperiences);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const boughtExperiences = await Reservation_experience.findAll();
+    const boughtPackages = await Reservation_package.findAll();
     const boughtPackagesAndExperiences =
       boughtPackages.concat(boughtExperiences);
     return res.status(200).send(boughtPackagesAndExperiences);
@@ -81,7 +93,7 @@ router.post("/experiences", async (req, res) => {
 });
 
 router.post("/packages", async (req, res) => {
-  const { packageId, userId } = req.query;
+  const { packageId, userId, pax, total, date } = req.query;
 
   if (!packageId || !userId)
     return res.status(201).send("You must enter a experienceId and userId");
