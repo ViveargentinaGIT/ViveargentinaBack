@@ -35,7 +35,7 @@ router.get("/:userId", async (req, res) => {
 });
 
 router.post("/experiences", async (req, res) => {
-  const { experienceId, userId } = req.query;
+  const { experienceId, userId, pax, total, date } = req.body;
 
   if (!experienceId || !userId)
     return res.status(201).send("You must enter a experienceId and userId");
@@ -48,7 +48,13 @@ router.post("/experiences", async (req, res) => {
 
     if (searchedBought.length > 0) {
       Reservation_experience.update(
-        { bought: true },
+        {
+          bought: true,
+          dates: date,
+          passengers: pax,
+          total: total,
+          status: "Pending payment",
+        },
         {
           where: {
             [Op.and]: [{ userId: userId }, { experienceId: experienceId }],
@@ -59,6 +65,10 @@ router.post("/experiences", async (req, res) => {
     } else {
       let newBought = await Reservation_experience.create({
         bought: true,
+        dates: date,
+        passengers: pax,
+        total: total,
+        status: "Pending payment",
         experienceId,
         userId,
       });
