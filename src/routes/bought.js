@@ -94,7 +94,13 @@ router.post("/packages", async (req, res) => {
 
     if (searchedBought.length > 0) {
       Reservation_package.update(
-        { bought: true },
+        {
+          bought: true,
+          dates: date,
+          passengers: pax,
+          total: total,
+          status: "Pending payment",
+        },
         {
           where: {
             [Op.and]: [{ userId: userId }, { packageId: packageId }],
@@ -105,6 +111,10 @@ router.post("/packages", async (req, res) => {
     } else {
       let newBought = await Reservation_package.create({
         bought: true,
+        dates: date,
+        passengers: pax,
+        total: total,
+        status: "Pending payment",
         packageId,
         userId,
       });
