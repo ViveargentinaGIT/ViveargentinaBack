@@ -81,7 +81,7 @@ router.post("/experiences", async (req, res) => {
 });
 
 router.post("/packages", async (req, res) => {
-  const { packageId, userId } = req.query;
+  const { packageId, userId, pax, total, date } = req.query;
 
   if (!packageId || !userId)
     return res.status(201).send("You must enter a experienceId and userId");
