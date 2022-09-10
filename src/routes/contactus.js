@@ -3,7 +3,7 @@ const { transporter } = require("../utils/utils");
 
 const router = Router();
 
-router.get("/", async (req,res)=>{
+router.post("/", async (req,res)=>{
       const {name, lastName, email, message} = req.body;
       await transporter.sendMail({
             from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
