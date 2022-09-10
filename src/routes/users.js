@@ -84,8 +84,7 @@ router.post("/singin", async (req, res)=>{
       html: `<h1>ExperianceViveArgentina! confirmation email</h1>
             <p>If you have not register to experienceviveargentina please ignore this email</p>
             <p>Click the link below to complete the registration</p>
-            <buttom><a href="https://experienceviveargentina.vercel.app/verify/${newUser.id}/${accessToken}">Confirm Registration</a></buttom>
-            <p>${accessToken}</p>`, // html body
+            <buttom><a href="https://experienceviveargentina.vercel.app/verify/${newUser.id}/${accessToken}">Confirm Registration</a></buttom>`, // html body
     })
     res.status(200).send(`An email was send to ${newUser.email}. Check the email to complete the registration`)
   } catch (error) {
