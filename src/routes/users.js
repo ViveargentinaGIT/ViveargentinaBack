@@ -20,7 +20,7 @@ function authenticateToken(req, res, next){
 
 router.post("/google_login", async (req, res)=>{
   const {first_name, last_name, email, password, photo} = req.body;
-  let googleEmail = `google@+${email}`
+  let googleEmail = `google@${email}`
   try {
     const user = await User.findAll({
       where:{
