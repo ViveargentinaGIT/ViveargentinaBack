@@ -2,21 +2,21 @@ const { Router } = require("express");
 const { User, Query, Review, Experience, Package } = require("../database");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { transporter } = require("../utils/utils");
+const { transporter, authenticateToken } = require("../utils/utils");
 
 const router = Router();
 
-function authenticateToken(req, res, next){
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if(token == null) return res.sendStatus(401)
+// function authenticateToken(req, res, next){
+//   const authHeader = req.headers['authorization']
+//   const token = authHeader && authHeader.split(' ')[1]
+//   if(token == null) return res.sendStatus(401)
 
-  jwt.verify(token, "henryboom", (err, user)=>{
-    if(err) return res.sendStatus(403)
-    req.user = user
-    next()
-  })
-}
+//   jwt.verify(token, "henryboom", (err, user)=>{
+//     if(err) return res.sendStatus(403)
+//     req.user = user
+//     next()
+//   })
+// }
 
 router.post("/google_login", async (req, res)=>{
   const {first_name, last_name, email, password, photo} = req.body;
@@ -84,7 +84,7 @@ router.post("/singin", async (req, res)=>{
       html: `<h1>ExperianceViveArgentina! confirmation email</h1>
             <p>If you have not register to experienceviveargentina please ignore this email</p>
             <p>Click the link below to complete the registration</p>
-            <buttom><a href="https://experienceviveargentina.vercel.app/verify/${newUser.id}/${accessToken}">Confirm Registration</a></buttom>`, // html body
+            <buttom><a href="https://experienceviveargentina.vercel.app/verify/${accessToken}">Confirm Registration</a></buttom>`, // html body
     })
     res.status(200).send(`An email was send to ${newUser.email}. Check the email to complete the registration`)
   } catch (error) {
@@ -92,13 +92,13 @@ router.post("/singin", async (req, res)=>{
   }
 })
 
-router.post("/verify/:id", authenticateToken, async (req, res)=>{
-  console.log("id: "+req.params.id)
+router.post("/verify/", authenticateToken, async (req, res)=>{
+  console.log("body id: "+req.id)
   User.update(
     {
       birth_date: "active",
     },
-    { where: { id: req.params.id } }
+    { where: { id: req.id } }
   );
   res.redirect('https://experienceviveargentina.vercel.app/home')
 })

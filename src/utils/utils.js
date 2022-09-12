@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const nodemailer = require('nodemailer')
+const jwt = require('jsonwebtoken');
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 // const axios = require("axios");
@@ -23,7 +24,6 @@ function authenticateToken(req, res, next){
     jwt.verify(token, "henryboom", (err, id)=>{
         if(err) return res.sendStatus(403)
         req.id = id
-        console.log(id)
         next()
     })
 }
