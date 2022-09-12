@@ -49,8 +49,6 @@ router.get("/", async (req, res) => {
 router.post("/experiences", async (req, res) => {
   const { userId } = req.query;
   const { experienceId, pax, price, dates } = req.body;
-  console.log(experienceId);
-  console.log(dates);
 
   if (!experienceId || !userId || !pax || !dates)
     return res
