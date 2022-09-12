@@ -49,8 +49,10 @@ router.get("/", async (req, res) => {
 router.post("/experiences", async (req, res) => {
   const { userId } = req.query;
   const { experienceId, pax, price, dates } = req.body;
+  console.log(experienceId);
+  console.log(dates);
 
-  if (!experienceId || !userId || !pax || !total || !dates)
+  if (!experienceId || !userId || !pax || !dates)
     return res
       .status(201)
       .send("You must enter a experienceId, pax, total, date and userId");
@@ -67,7 +69,7 @@ router.post("/experiences", async (req, res) => {
           bought: true,
           dates: dates,
           passengers: pax,
-          total: pax * price,
+          total: parseInt(pax) * parseInt(price),
           status: "Pending payment",
         },
         {
@@ -82,7 +84,7 @@ router.post("/experiences", async (req, res) => {
         bought: true,
         dates: dates,
         passengers: pax,
-        total: pax * price,
+        total: parseInt(pax) * parseInt(price),
         status: "Pending payment",
         experienceId,
         userId,
@@ -97,12 +99,14 @@ router.post("/experiences", async (req, res) => {
 
 router.post("/packages", async (req, res) => {
   const { userId } = req.query;
-  const { packageId, pax, price, dates } = req.query;
+  const { packageId, pax, price, dates } = req.body;
+  console.log(packageId);
+  console.log(dates);
 
-  if (!packageId || !userId || !pax || !total || !dates)
+  if (!packageId || !userId || !pax || !dates)
     return res
       .status(201)
-      .send("You must enter a experienceId, pax, total, date and userId");
+      .send("You must enter a packageId, pax, total, date and userId");
   try {
     let searchedBought = await Reservation_package.findAll({
       where: {
@@ -116,7 +120,7 @@ router.post("/packages", async (req, res) => {
           bought: true,
           dates: dates,
           passengers: pax,
-          total: pax * price,
+          total: parseInt(pax) * parseInt(price),
           status: "Pending payment",
         },
         {
@@ -131,7 +135,7 @@ router.post("/packages", async (req, res) => {
         bought: true,
         dates: dates,
         passengers: pax,
-        total: pax * price,
+        total: parseInt(pax) * parseInt(price),
         status: "Pending payment",
         packageId,
         userId,
