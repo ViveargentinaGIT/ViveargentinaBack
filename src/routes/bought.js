@@ -48,9 +48,9 @@ router.get("/", async (req, res) => {
 
 router.post("/experiences", async (req, res) => {
   const { userId } = req.query;
-  const { experienceId, pax, total, date } = req.body;
+  const { experienceId, pax, price, dates } = req.body;
 
-  if (!experienceId || !userId || !pax || !total || !date)
+  if (!experienceId || !userId || !pax || !total || !dates)
     return res
       .status(201)
       .send("You must enter a experienceId, pax, total, date and userId");
@@ -65,9 +65,9 @@ router.post("/experiences", async (req, res) => {
       Reservation_experience.update(
         {
           bought: true,
-          dates: date,
+          dates: dates,
           passengers: pax,
-          total: total,
+          total: pax * price,
           status: "Pending payment",
         },
         {
@@ -80,9 +80,9 @@ router.post("/experiences", async (req, res) => {
     } else {
       let newBought = await Reservation_experience.create({
         bought: true,
-        dates: date,
+        dates: dates,
         passengers: pax,
-        total: total,
+        total: pax * price,
         status: "Pending payment",
         experienceId,
         userId,
@@ -97,9 +97,9 @@ router.post("/experiences", async (req, res) => {
 
 router.post("/packages", async (req, res) => {
   const { userId } = req.query;
-  const { packageId, pax, total, date } = req.query;
+  const { packageId, pax, price, dates } = req.query;
 
-  if (!packageId || !userId || !pax || !total || !date)
+  if (!packageId || !userId || !pax || !total || !dates)
     return res
       .status(201)
       .send("You must enter a experienceId, pax, total, date and userId");
@@ -114,9 +114,9 @@ router.post("/packages", async (req, res) => {
       Reservation_package.update(
         {
           bought: true,
-          dates: date,
+          dates: dates,
           passengers: pax,
-          total: total,
+          total: pax * price,
           status: "Pending payment",
         },
         {
@@ -129,9 +129,9 @@ router.post("/packages", async (req, res) => {
     } else {
       let newBought = await Reservation_package.create({
         bought: true,
-        dates: date,
+        dates: dates,
         passengers: pax,
-        total: total,
+        total: pax * price,
         status: "Pending payment",
         packageId,
         userId,
