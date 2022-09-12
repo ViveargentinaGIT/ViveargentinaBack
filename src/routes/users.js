@@ -57,6 +57,48 @@ router.post("/google_login", async (req, res)=>{
   }
 })
 
+router.post("/reset_password_request", async (req, res)=>{
+  const {email} = req.body
+  try {
+    const user = await User.findAll({
+      where:{
+        email: email
+      }
+    })
+    if(user.length === 0) return res.send(`there is no user with the email ${email}`)
+    const accessToken = await jwt.sign(user[0].id, "henryboom")
+    await transporter.sendMail({
+      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      to: user[0].email, // list of receivers
+      subject: "Viveargentina reset password", // Subject line
+      html: `<h1>ExperianceViveArgentina! reset pasword</h1>
+            <p>If you did not request to change your password to experienceviveargentina please contact us via email for possible hacking attempt</p>
+            <p>Click the link below to complete the registration</p>
+            <buttom><a href="https://experienceviveargentina.vercel.app/reset_password/${accessToken}">Reset Password</a></buttom>`, // html body
+    })
+    res.send('Check your email to proceed with the password reset')
+  } catch (error) {
+    res.status(400).send("something went wrong: "+error)
+  }
+})
+
+router.post("/password_reset", authenticateToken, async (req, res)=>{
+  const id = req.id;
+  const {password} = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await User.update(
+      {
+        password: hashedPassword,
+      },
+      { where: { id: id } }
+    );
+    res.send('password was reset successfully '+ password)
+  } catch (error) {
+    res.status(400).send("We got an error: "+error)
+  }
+})
+
 router.post("/singin", async (req, res)=>{
   const {first_name, last_name, email, password} = req.body;
   if (!first_name){
@@ -93,7 +135,6 @@ router.post("/singin", async (req, res)=>{
 })
 
 router.post("/verify/", authenticateToken, async (req, res)=>{
-  console.log("body id: "+req.id)
   User.update(
     {
       birth_date: "active",
@@ -101,6 +142,26 @@ router.post("/verify/", authenticateToken, async (req, res)=>{
     { where: { id: req.id } }
   );
   res.redirect('https://experienceviveargentina.vercel.app/home')
+})
+
+router.post("/change_password", authenticateToken, async (req, res)=>{
+  const id = req.id;
+  const {password, newPassword} = req.body
+  try {
+    const user = await User.findByPk(id);
+    if(await bcrypt.compare(password, user.password)){
+			const hashedPassword = await bcrypt.hash(newPassword, 10)
+      await User.update({
+        password: hashedPassword
+      },
+      { where: { id: id } })
+      res.status(201).json('password was successfully changed')
+		} else{
+			res.send('not allowed')
+		}
+  } catch (error) {
+    res.status(400).send("Error: "+error)
+  } 
 })
 
 router.post("/login", async (req, res)=>{
