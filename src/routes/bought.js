@@ -47,10 +47,13 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/experiences", async (req, res) => {
-  const { experienceId, userId, pax, total, date } = req.body;
+  const { userId } = req.query;
+  const { experienceId, pax, total, date } = req.body;
 
-  if (!experienceId || !userId)
-    return res.status(201).send("You must enter a experienceId and userId");
+  if (!experienceId || !userId || !pax || !total || !date)
+    return res
+      .status(201)
+      .send("You must enter a experienceId, pax, total, date and userId");
   try {
     let searchedBought = await Reservation_experience.findAll({
       where: {
@@ -93,10 +96,13 @@ router.post("/experiences", async (req, res) => {
 });
 
 router.post("/packages", async (req, res) => {
-  const { packageId, userId, pax, total, date } = req.query;
+  const { userId } = req.query;
+  const { packageId, pax, total, date } = req.query;
 
-  if (!packageId || !userId)
-    return res.status(201).send("You must enter a experienceId and userId");
+  if (!packageId || !userId || !pax || !total || !date)
+    return res
+      .status(201)
+      .send("You must enter a experienceId, pax, total, date and userId");
   try {
     let searchedBought = await Reservation_package.findAll({
       where: {
