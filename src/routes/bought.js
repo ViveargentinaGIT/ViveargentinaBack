@@ -147,10 +147,10 @@ router.post("/packages", async (req, res) => {
 });
 
 router.put("/experiences", async (req, res) => {
-  const { experienceId, userId } = req.query;
+  const { experienceId, userId, status, bought } = req.body;
   try {
     Reservation_experience.update(
-      { bought: false },
+      { bought: bought, status: status },
       {
         where: {
           [Op.and]: [{ userId: userId }, { experienceId: experienceId }],
@@ -164,10 +164,10 @@ router.put("/experiences", async (req, res) => {
 });
 
 router.put("/packages", async (req, res) => {
-  const { packageId, userId } = req.query;
+  const { packageId, userId, status, bought } = req.body;
   try {
     Reservation_package.update(
-      { bought: false },
+      { bought: bought, status: status },
       {
         where: {
           [Op.and]: [{ userId: userId }, { packageId: packageId }],
