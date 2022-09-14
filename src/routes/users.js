@@ -144,6 +144,7 @@ router.post("/verify/", authenticateToken, async (req, res)=>{
   res.redirect('https://experienceviveargentina.vercel.app/home')
 })
 
+//this rout gets id via token on header and both password and new password through body. It changes the password.
 router.post("/change_password", authenticateToken, async (req, res)=>{
   const id = req.id;
   const {password, newPassword} = req.body
@@ -164,6 +165,27 @@ router.post("/change_password", authenticateToken, async (req, res)=>{
   } 
 })
 
+router.put("/soft_delete", authenticateToken, async (req, res)=>{
+  const {userId} = req.body
+  const adminId = req.id
+  console.log(userId)
+  console.log(adminId)
+  try {
+    const adminUser = await User.findByPk(adminId)
+    if(!adminUser.administrator){
+      res.status(403).send("This user is not an administrator")
+    }
+    await User.update(
+      {disabled: true},
+      {where:{id:userId}}
+    )
+    res.send("user was successfully deleted")
+  } catch (error) {
+    res.status(400).send("Error: "+error)
+  }
+
+})
+
 router.post("/login", async (req, res)=>{
   const {email, password}= req.body;
   try {
@@ -179,6 +201,9 @@ router.post("/login", async (req, res)=>{
     }
     if(user.birth_date===null){
       res.status(400).send('Please confirm your email to login')
+    }
+    if(user.disable){
+      res.status(400).send('This user was deleted')
     }
     if(await bcrypt.compare(password, user.password)){
       const id = user.id
