@@ -6,17 +6,6 @@ const { transporter, authenticateToken } = require("../utils/utils");
 
 const router = Router();
 
-// function authenticateToken(req, res, next){
-//   const authHeader = req.headers['authorization']
-//   const token = authHeader && authHeader.split(' ')[1]
-//   if(token == null) return res.sendStatus(401)
-
-//   jwt.verify(token, "henryboom", (err, user)=>{
-//     if(err) return res.sendStatus(403)
-//     req.user = user
-//     next()
-//   })
-// }
 
 router.post("/google_login", async (req, res)=>{
   const {first_name, last_name, email, password, photo} = req.body;
@@ -76,7 +65,7 @@ router.post("/reset_password_request", async (req, res)=>{
             <p>Click the link below to complete the registration</p>
             <buttom><a href="https://experienceviveargentina.vercel.app/reset_password/${accessToken}">Reset Password</a></buttom>`, // html body
     })
-    res.send('Check your email to proceed with the password reset')
+    res.send(`Check the email ${email} to proceed with the password reset`)
   } catch (error) {
     res.status(400).send("something went wrong: "+error)
   }
@@ -185,6 +174,7 @@ router.put("/soft_delete", authenticateToken, async (req, res)=>{
   }
 
 })
+
 
 router.post("/login", async (req, res)=>{
   const {email, password}= req.body;
