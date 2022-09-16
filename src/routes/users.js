@@ -175,6 +175,29 @@ router.put("/soft_delete", authenticateToken, async (req, res)=>{
 
 })
 
+router.put("/shift_admin_authorization", authenticateToken, async (req, res)=>{
+  const {userId} = req.body
+  const adminId = req.id
+  try {
+    const adminUser = await User.findByPk(adminId)
+    if(!adminUser.administrator){
+      res.status(403).send("This user is not an administrator")
+    }
+    const userToShift = await User.findByPk(userId)
+    const flag = userToShift.administrator ? false: true;
+    console.log(`User: ${userToShift.email} - Administrator: ${flag}`)
+    await User.update(
+      {administrator: flag},
+      {where:{id:userId}}
+      )
+      flag ? res.send(`User ${userToShift.first_name} ${userToShift.last_name} is now an administrator`) 
+      : res.send(`User ${userToShift.first_name} ${userToShift.last_name} is no longer an administrator`)
+  } catch (error) {
+    res.status(400).send("Error: "+error)
+  }
+
+})
+
 
 router.post("/login", async (req, res)=>{
   const {email, password}= req.body;
