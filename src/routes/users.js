@@ -152,7 +152,7 @@ router.post("/change_password", authenticateToken, async (req, res)=>{
       { where: { id: id } })
       res.status(201).send('password was successfully changed')
 		} else{
-			res.send('not allowed')
+			res.send('current password is incorrect')
 		}
   } catch (error) {
     res.status(400).send("Error: "+error)
