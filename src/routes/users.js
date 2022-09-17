@@ -150,7 +150,7 @@ router.post("/change_password", authenticateToken, async (req, res)=>{
         password: hashedPassword
       },
       { where: { id: id } })
-      res.status(201).json('password was successfully changed')
+      res.status(201).send('password was successfully changed')
 		} else{
 			res.send('not allowed')
 		}
