@@ -32,7 +32,7 @@ router.post("/google_login", async (req, res)=>{
         include: [Query, Review, Experience, Package]
       })
       newUser.email = email;
-      if(newUser[0].disable){
+      if(newUser[0].disabled){
         return res.status(400).send("This user was deleted")
       } 
       const id = newUser[0].id
