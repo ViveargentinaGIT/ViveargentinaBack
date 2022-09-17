@@ -42,6 +42,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const {
+    id,
     name,
     description,
     image,
@@ -57,6 +58,7 @@ router.post("/", async (req, res) => {
   if (!name) return res.status(201).send("You must enter a name");
   try {
     const newPackage = await Package.create({
+      id,
       name: name,
       description,
       image,

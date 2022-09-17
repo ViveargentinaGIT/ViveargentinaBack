@@ -12,6 +12,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 src/client.rest
 src/contact.rest
+src/backup.rest
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

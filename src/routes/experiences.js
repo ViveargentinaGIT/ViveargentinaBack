@@ -40,6 +40,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const {
+    id,
     name,
     description,
     image,
@@ -60,6 +61,7 @@ router.post("/", async (req, res) => {
     return res.status(201).send("You must complete the form");
   try {
     const newExperience = await Experience.create({
+      id,
       name: name,
       description,
       image,

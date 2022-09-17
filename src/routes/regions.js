@@ -23,11 +23,11 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name } = req.body;
+  const { name, id } = req.body;
   if (!name)
     return res.status(404).send("You must enter a name to create a new region");
   try {
-    const newRegion = await Region.create({ name });
+    const newRegion = await Region.create({ name, id });
     return res.status(201).json(newRegion);
   } catch (err) {
     return res.status(404).json({ error: err.message });

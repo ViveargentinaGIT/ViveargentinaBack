@@ -27,10 +27,10 @@ router.get("/", async (req, res) => {
 
 
 router.post("/", async (req, res) => {
-  const { name } = req.body;
+  const { name, id } = req.body;
   try {
     if (!name) return res.status(404).send("You must enter a name to create the new category");
-    const newCategory = await Category.create({name: name});
+    const newCategory = await Category.create({name: name, id});
     return res.status(201).json(newCategory);
   } catch (err) {
     return res.status(404).send("An error ocurred while creating the region");

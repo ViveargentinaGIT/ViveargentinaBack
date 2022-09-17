@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, subTitle, score, description, image, video, regionId } =
+  const { id, name, subTitle, score, description, image, video, regionId } =
     req.body;
   if (!name /*|| !description || !score*/)
     return res
@@ -52,6 +52,7 @@ router.post("/", async (req, res) => {
       video,
       subTitle,
       score,
+      id
     });
     let selectedRegion = await Region.findByPk(regionId);
     newCity.setRegion(selectedRegion);
