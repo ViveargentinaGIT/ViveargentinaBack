@@ -32,6 +32,9 @@ router.post("/google_login", async (req, res)=>{
         include: [Query, Review, Experience, Package]
       })
       newUser.email = email;
+      if(newUser[0].disable){
+        return res.status(400).send("This user was deleted")
+      } 
       const id = newUser[0].id
 			const accessToken = await jwt.sign(id, "henryboom")
       return res.status(201).json({accessToken: accessToken, auth: true, user: newUser[0]})
@@ -49,11 +52,13 @@ router.post("/google_login", async (req, res)=>{
 router.post("/reset_password_request", async (req, res)=>{
   const {email} = req.body
   try {
+    console.log(email)
     const user = await User.findAll({
       where:{
         email: email
       }
     })
+    console.log(user)
     if(user.length === 0) return res.send(`there is no user with the email ${email}`)
     const accessToken = await jwt.sign(user[0].id, "henryboom")
     await transporter.sendMail({
@@ -159,16 +164,20 @@ router.put("/soft_delete", authenticateToken, async (req, res)=>{
   const adminId = req.id
   console.log(userId)
   console.log(adminId)
+  let shift 
   try {
     const adminUser = await User.findByPk(adminId)
     if(!adminUser.administrator){
       res.status(403).send("This user is not an administrator")
     }
+    const user = await User.findByPk(userId)
+    shift = user.disabled ? false : true
     await User.update(
-      {disabled: true},
+      {disabled: shift},
       {where:{id:userId}}
     )
-    res.send("user was successfully deleted")
+    shift ? res.send("user was successfully blocked") : res.send("user was successfully unblocked")
+    
   } catch (error) {
     res.status(400).send("Error: "+error)
   }
@@ -185,7 +194,6 @@ router.put("/shift_admin_authorization", authenticateToken, async (req, res)=>{
     }
     const userToShift = await User.findByPk(userId)
     const flag = userToShift.administrator ? false: true;
-    console.log(`User: ${userToShift.email} - Administrator: ${flag}`)
     await User.update(
       {administrator: flag},
       {where:{id:userId}}
@@ -215,7 +223,7 @@ router.post("/login", async (req, res)=>{
     if(user.birth_date===null){
       res.status(400).send('Please confirm your email to login')
     }
-    if(user.disable){
+    if(user.disabled){
       res.status(400).send('This user was deleted')
     }
     if(await bcrypt.compare(password, user.password)){
