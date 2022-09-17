@@ -97,6 +97,7 @@ router.post("/experiences", async (req, res) => {
     }
   } catch (err) {
     // return res.status(404).send("There was an error in the creation of the city");
+    console.log(err);
     res.status(404).json({ error: err.message });
   }
 });
@@ -152,6 +153,7 @@ router.post("/packages", async (req, res) => {
     }
   } catch (err) {
     // return res.status(404).send("There was an error in the creation of the city");
+    console.log(err.message);
     res.status(404).json({ error: err.message });
   }
 });

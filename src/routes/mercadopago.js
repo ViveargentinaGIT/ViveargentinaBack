@@ -52,10 +52,9 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/response", async (req, res) => {
-  const response = req.body;
+router.post("/response", async (req, res) => {
   try {
-    console.log(response);
+    console.log(req.body);
     return res.status(200).send("OK");
   } catch (err) {
     res.status(400).json({ error: err.message });
