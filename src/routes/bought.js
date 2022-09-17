@@ -180,4 +180,50 @@ router.put("/packages", async (req, res) => {
   }
 });
 
+router.delete("/packages/:Id", async (req, res) => {
+  const { Id } = req.params;
+  try {
+    await Reservation_package.destroy({ where: { id: Id } });
+    res.status(200).send("Package deleted successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.delete("/experiences/:Id", async (req, res) => {
+  const { Id } = req.params;
+  try {
+    await Reservation_experience.destroy({ where: { id: Id } });
+    res.status(200).send("Experience deleted successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.delete("/packages", async (req, res) => {
+  try {
+    const boughtPackages = await Reservation_package.findAll();
+    boughtPackages.forEach((element) => {
+      Reservation_package.destroy({ where: { id: element.id } });
+    });
+
+    res.status(200).send("Packages deleted successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.delete("/experiences", async (req, res) => {
+  try {
+    const boughtExperiences = await Reservation_experience.findAll();
+    boughtExperiences.forEach((element) => {
+      Reservation_experience.destroy({ where: { id: element.id } });
+    });
+
+    res.status(200).send("Experiences deleted successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
 module.exports = router;
