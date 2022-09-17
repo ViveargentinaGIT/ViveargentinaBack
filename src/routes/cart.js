@@ -1,7 +1,8 @@
 const { Router } = require("express");
 const {
-  Reservation_package,
-  Reservation_experience,
+  Sales_package,
+  Sales_experience,
+  Sales,
   User,
   Experience,
   Package,
@@ -13,19 +14,14 @@ const router = Router();
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const selectedUser = await User.findByPk(userId, {
-      include: [Query, Review, Experience, Package],
+    const allSales = await Sales.findAll({
+      where: {
+        userId: userId,
+      },
+      include: [Experience, Package],
     });
-
-    let cartExperiences = selectedUser.experiences.filter((e) => {
-      return e.reservation_experience.status === "cart";
-    });
-    let cartPackages = selectedUser.packages.filter((e) => {
-      return e.reservation_package.status === "cart";
-    });
-
-    const cartPackagesAndExperiences = cartPackages.concat(cartExperiences);
-    return res.status(200).send(cartPackagesAndExperiences);
+    let allCart = allSales.filter((s) => s.status === "cart");
+    return res.status(200).send(allCart);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -33,127 +29,79 @@ router.get("/:userId", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const cartExperiences = await Reservation_experience.findAll({
-      where: { status: "cart" },
+    const allSales = await Sales.findAll({
+      include: [Package, Experience],
     });
-    const cartPackages = await Reservation_package.findAll({
-      where: { status: "cart" },
-    });
-    const cartPackagesAndExperiences = cartPackages.concat(cartExperiences);
-    return res.status(200).send(cartPackagesAndExperiences);
+    let allCart = allSales.filter((s) => s.status === "cart");
+    return res.status(200).send(allCart);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-router.post("/experiences", async (req, res) => {
+router.post("/", async (req, res) => {
   const { userId } = req.query;
-  const { experienceId, pax, price, dates } = req.body;
+  const arrayItems = req.body;
 
-  if (!experienceId || !userId || !pax || !dates)
-    return res
-      .status(201)
-      .send("You must enter a experienceId, pax, total, date and userId");
   try {
-    let searchedCart = await Reservation_experience.findAll({
+    // Busco el cart anterior de este usuario
+    const allSales = await Sales.findAll({
       where: {
-        [Op.and]: [
-          { userId: userId },
-          { experienceId: experienceId },
-          { status: "cart" },
-        ],
+        [Op.and]: [{ userId: userId }, { status: "cart" }],
+      },
+      include: [Experience, Package],
+    });
+
+    //Elimino sus paquetes y experiencias asociados
+    allSales.forEach((s) => {
+      Sales_experience.destroy({ where: { salesId: s.id } });
+      Sales_package.destroy({ where: { salesId: s.id } });
+    });
+
+    //Elimino el cart
+    Sales.destroy({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "cart" }],
       },
     });
 
-    if (searchedCart.length > 0) {
-      Reservation_experience.update(
-        {
-          dates: dates,
-          passengers: pax,
-          total: parseInt(pax) * parseInt(price),
-          status: "cart",
-        },
-        {
-          where: {
-            [Op.and]: [
-              { userId: userId },
-              { experienceId: experienceId },
-              { status: "cart" },
-            ],
-          },
-        }
-      );
-      return res.status(201).send("Cart added successfully");
-    } else {
-      let newExperiencesCart = await Reservation_experience.create({
-        dates: dates,
-        passengers: pax,
-        total: parseInt(pax) * parseInt(price),
-        status: "cart",
-        experienceId,
-        userId,
-      });
-      return res.status(201).json(newExperiencesCart);
-    }
+    //Creo un nuevo cart
+    let total;
+    arrayItems.forEach((i) => {
+      total = total + i.pax * i.price;
+    });
+
+    let newSale = await Sales.create({
+      total: parseInt(pax) * parseInt(price),
+      status: "cart",
+      userId: userId,
+    });
+
+    // Recorro el array de items y creo la asociacion de cada exp o pack
+    // con en nuevo cart
+    arrayItems.forEach((i) => {
+      if (i.tipe === "experience") {
+        Sales_experience.create({
+          dates: i.dates,
+          passengers: i.pax,
+          total: parseInt(i.pax) * parseInt(i.price),
+          saleId: newSale.id,
+          userId: userId,
+        });
+      } else if (i.tipe === "package") {
+        Sales_package.create({
+          dates: i.dates,
+          passengers: i.pax,
+          total: parseInt(i.pax) * parseInt(i.price),
+          saleId: newSale.id,
+          userId: userId,
+        });
+      }
+    });
+
+    return res.status(201).json(newSale);
   } catch (err) {
-    // return res.status(404).send("There was an error in the creation of the city");
     console.log(err);
-    res.status(404).json({ error: err.message });
-  }
-});
-
-router.post("/packages", async (req, res) => {
-  const { userId } = req.query;
-  const { packageId, pax, price, dates } = req.body;
-
-  if (!packageId || !userId || !pax || !dates)
-    return res
-      .status(201)
-      .send("You must enter a packageId, pax, total, date and userId");
-  try {
-    let searchedCart = await Reservation_package.findAll({
-      where: {
-        [Op.and]: [
-          { userId: userId },
-          { packageId: packageId },
-          { status: "cart" },
-        ],
-      },
-    });
-
-    if (searchedCart.length > 0) {
-      Reservation_package.update(
-        {
-          dates: dates,
-          passengers: pax,
-          total: parseInt(pax) * parseInt(price),
-          status: "cart",
-        },
-        {
-          where: {
-            [Op.and]: [
-              { userId: userId },
-              { packageId: packageId },
-              { status: "cart" },
-            ],
-          },
-        }
-      );
-      return res.status(201).send("Cart added successfully");
-    } else {
-      let newPackageCart = await Reservation_package.create({
-        dates: dates,
-        passengers: pax,
-        total: parseInt(pax) * parseInt(price),
-        status: "cart",
-        packageId,
-        userId,
-      });
-      return res.status(201).json(newPackageCart);
-    }
-  } catch (err) {
-    // return res.status(404).send("There was an error in the creation of the city");
-    console.log(err.message);
     res.status(404).json({ error: err.message });
   }
 });
