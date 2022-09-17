@@ -37,7 +37,7 @@ router.post("/google_login", async (req, res)=>{
       return res.status(201).json({accessToken: accessToken, auth: true, user: newUser[0]})
     }else{
       if(user[0].disabled === true){
-        return res.status(400).send("This user was deleted")
+        return res.status(200).send("This user was deleted")
       } 
       const id = user[0].id
       user[0].email = email
