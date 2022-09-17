@@ -218,13 +218,13 @@ router.post("/login", async (req, res)=>{
     })
     user = user[0].dataValues
     if(user.length === 0){
-      res.status(404).send('user not found')
+      return res.status(200).send('user not found')
     }
     if(user.birth_date===null){
-      res.status(400).send('Please confirm your email to login')
+      return res.status(200).send('Please confirm your email to login')
     }
     if(user.disabled){
-      res.status(400).send('This user was deleted')
+      return res.status(200).send('This user was deleted')
     }
     if(await bcrypt.compare(password, user.password)){
       const id = user.id
@@ -232,10 +232,10 @@ router.post("/login", async (req, res)=>{
       user.password = password;
       res.status(201).json({accessToken: accessToken, auth: true, user: user})
 		} else{
-			res.send('not allowed')
+			return res.send('not allowed')
 		}
   } catch (error) {
-    res.status(500).send('something went wrong')
+    return res.status(500).send('something went wrong')
   }
 })
 
