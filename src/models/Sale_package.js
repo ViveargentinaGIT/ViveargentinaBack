@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("sales_experience", {
+  sequelize.define("sale_package", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
     },
     status: {
       type: DataTypes.STRING,
-      //allowNull: false,
+      // allowNull: false,
     },
     dates: {
       type: DataTypes.STRING,
@@ -18,11 +18,11 @@ module.exports = (sequelize) => {
     },
     passengers: {
       type: DataTypes.INTEGER,
-      //allowNull: false,
+      // allowNull: false,
     },
     total: {
       type: DataTypes.INTEGER,
-      //allowNull: false,
+      // allowNull: false,
     },
   });
 };

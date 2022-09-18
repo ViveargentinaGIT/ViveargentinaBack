@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const {
-  Sales_package,
-  Sales_experience,
-  Sales,
-  User,
+  Sale_package,
+  Sale_experience,
+  Sale,
   Experience,
   Package,
+  User,
 } = require("../database");
 const { Op } = require("sequelize");
 
@@ -14,11 +14,11 @@ const router = Router();
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const allSales = await Sales.findAll({
+    const allSales = await Sale.findAll({
       where: {
         userId: userId,
       },
-      include: [Experience, Package],
+      include: [Experience, Package, User],
     });
     let allCart = allSales.filter((s) => s.status === "cart");
     return res.status(200).send(allCart);
@@ -29,8 +29,8 @@ router.get("/:userId", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const allSales = await Sales.findAll({
-      include: [Package, Experience],
+    const allSales = await Sale.findAll({
+      include: [Package, Experience, User],
     });
     let allCart = allSales.filter((s) => s.status === "cart");
     return res.status(200).send(allCart);
@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
 
   try {
     // Busco el cart anterior de este usuario
-    const allSales = await Sales.findAll({
+    const allSales = await Sale.findAll({
       where: {
         [Op.and]: [{ userId: userId }, { status: "cart" }],
       },
@@ -54,25 +54,25 @@ router.post("/", async (req, res) => {
 
     //Elimino sus paquetes y experiencias asociados
     allSales.forEach((s) => {
-      Sales_experience.destroy({ where: { salesId: s.id } });
-      Sales_package.destroy({ where: { salesId: s.id } });
+      Sale_experience.destroy({ where: { saleId: s.id } });
+      Sale_package.destroy({ where: { saleId: s.id } });
     });
 
     //Elimino el cart
-    Sales.destroy({
+    await Sale.destroy({
       where: {
         [Op.and]: [{ userId: userId }, { status: "cart" }],
       },
     });
 
     //Creo un nuevo cart
-    let total;
+    let total = 0;
     arrayItems.forEach((i) => {
-      total = total + i.pax * i.price;
+      total = total + parseInt(i.pax) * parseInt(i.price);
     });
 
-    let newSale = await Sales.create({
-      total: parseInt(pax) * parseInt(price),
+    let newSale = await Sale.create({
+      total: Number(total),
       status: "cart",
       userId: userId,
     });
@@ -80,21 +80,21 @@ router.post("/", async (req, res) => {
     // Recorro el array de items y creo la asociacion de cada exp o pack
     // con en nuevo cart
     arrayItems.forEach((i) => {
-      if (i.tipe === "experience") {
-        Sales_experience.create({
+      if (i.type === "experience") {
+        Sale_experience.create({
           dates: i.dates,
-          passengers: i.pax,
+          passengers: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
-          userId: userId,
+          experienceId: i.experienceId,
         });
-      } else if (i.tipe === "package") {
-        Sales_package.create({
+      } else if (i.type === "package") {
+        Sale_package.create({
           dates: i.dates,
-          passengers: i.pax,
+          passengers: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
-          userId: userId,
+          packageId: i.packageId,
         });
       }
     });

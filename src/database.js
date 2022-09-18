@@ -44,38 +44,55 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Category, Experience, Package, City, Query, Region, Review, User } =
-  sequelize.models;
+const {
+  Category,
+  Experience,
+  Package,
+  City,
+  Query,
+  Region,
+  Review,
+  User,
+  Sale,
+} = sequelize.models;
 
 // Aca vendrian las relaciones
-// Product.hasMany(Reviews);
 
 Category.hasMany(Experience, {
   foreignKey: "categoryId",
 });
 Experience.belongsTo(Category);
+
 Region.hasMany(City, {
   foreignKey: "regionId",
 });
 City.belongsTo(Region);
+
 City.hasMany(Package, {
   foreignKey: "cityId",
 });
 Package.belongsTo(City);
+
 Package.hasMany(Experience, {
   foreignKey: "packageId",
 });
 Experience.belongsTo(Package);
-// Experience.hasMany(Reservation);
-// Reservation.hasMany(Experience);
+
 User.hasMany(Query, {
   foreignKey: "userId",
 });
 Query.belongsTo(User);
+
 User.hasMany(Review, {
   foreignKey: "userId",
 });
 Review.belongsTo(User);
+
+User.hasMany(Sale, {
+  foreignKey: "userId",
+});
+Sale.belongsTo(User);
+
 User.belongsToMany(Package, {
   through: "reservation_package",
   foreignKey: "userId",
@@ -84,17 +101,35 @@ Package.belongsToMany(User, {
   through: "reservation_package",
   foreignKey: "packageId",
 });
+
+Sale.belongsToMany(Package, {
+  through: "sale_package",
+  foreignKey: "saleId",
+});
+Package.belongsToMany(Sale, {
+  through: "sale_package",
+  foreignKey: "packageId",
+});
+
 User.belongsToMany(Experience, {
   through: "provider_experience",
 });
 Experience.belongsToMany(User, {
   through: "provider_experience",
 });
+
 User.belongsToMany(Experience, {
   through: "reservation_experience",
 });
 Experience.belongsToMany(User, {
   through: "reservation_experience",
+});
+
+Sale.belongsToMany(Experience, {
+  through: "sale_experience",
+});
+Experience.belongsToMany(Sale, {
+  through: "sale_experience",
 });
 
 module.exports = {
