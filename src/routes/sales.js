@@ -114,7 +114,7 @@ router.put("/", async (req, res) => {
     Sale.update(
       { status: status },
       {
-        where: { saleId: saleId },
+        where: { id: saleId },
       }
     );
     return res.status(201).send("Sale updated successfully");
