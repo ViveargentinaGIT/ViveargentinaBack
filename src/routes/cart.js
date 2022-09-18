@@ -18,10 +18,14 @@ router.get("/:userId", async (req, res) => {
       where: {
         userId: userId,
       },
-      include: [Experience, Package, User],
+      include: [Experience, Package],
     });
     let allCart = allSales.filter((s) => s.status === "cart");
-    return res.status(200).send(allCart);
+
+    const cartExperiences = await allCart[0].experiences;
+    const cartPackages = await allCart[0].packages;
+    const allCartItems = cartPackages.concat(cartExperiences);
+    return res.status(200).send(allCartItems);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -83,6 +87,7 @@ router.post("/", async (req, res) => {
       if (i.type === "experience") {
         Sale_experience.create({
           dates: i.dates,
+          price: parseInt(i.price),
           passengers: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
@@ -91,6 +96,7 @@ router.post("/", async (req, res) => {
       } else if (i.type === "package") {
         Sale_package.create({
           dates: i.dates,
+          price: parseInt(i.price),
           passengers: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
