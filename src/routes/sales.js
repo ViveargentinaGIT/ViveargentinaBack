@@ -108,11 +108,13 @@ router.post("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
   const { saleId, status } = req.body;
+  if (!saleId || !status)
+    return res.status(201).send("SaleId and status are required");
   try {
     Sale.update(
       { status: status },
       {
-        where: { salesId: saleId },
+        where: { saleId: saleId },
       }
     );
     return res.status(201).send("Sale updated successfully");
@@ -124,19 +126,19 @@ router.put("/", async (req, res) => {
 router.delete("/:saleId", async (req, res) => {
   const { saleId } = req.params;
   try {
-    const allSales = await Sales.findAll({
+    const allSales = await Sale.findAll({
       where: { id: saleId },
       include: [Experience, Package],
     });
 
     //Elimino sus paquetes y experiencias asociados
     allSales.forEach((s) => {
-      Sales_experience.destroy({ where: { salesId: s.id } });
-      Sales_package.destroy({ where: { salesId: s.id } });
+      Sale_experience.destroy({ where: { saleId: s.id } });
+      Sale_package.destroy({ where: { saleId: s.id } });
     });
 
     //Elimino el cart
-    Sales.destroy({ where: { userId: userId } });
+    Sale.destroy({ where: { id: saleId } });
     return res.status(201).send("Sale deleted successfully");
   } catch (err) {
     res.status(404).json({ error: err.message });
