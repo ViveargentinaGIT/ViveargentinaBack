@@ -20,8 +20,8 @@ router.get("/:userId", async (req, res) => {
       },
       include: [Experience, Package, User],
     });
-    let allCart = allSales.filter((s) => s.status === "cart");
-    return res.status(200).send(allCart);
+    let allHistorySales = allSales.filter((s) => s.status !== "cart");
+    return res.status(200).send(allHistorySales);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -32,8 +32,8 @@ router.get("/", async (req, res) => {
     const allSales = await Sale.findAll({
       include: [Package, Experience, User],
     });
-    let allCart = allSales.filter((s) => s.status === "cart");
-    return res.status(200).send(allCart);
+    let allHistorySales = allSales.filter((s) => s.status !== "cart");
+    return res.status(200).send(allHistorySales);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
 
     let newSale = await Sale.create({
       total: Number(total),
-      status: "cart",
+      status: "Pending payment",
       userId: userId,
     });
 
@@ -102,6 +102,43 @@ router.post("/", async (req, res) => {
     return res.status(201).json(newSale);
   } catch (err) {
     console.log(err);
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.put("/", async (req, res) => {
+  const { saleId, status } = req.body;
+  try {
+    Sale.update(
+      { status: status },
+      {
+        where: { salesId: saleId },
+      }
+    );
+    return res.status(201).send("Sale updated successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.delete("/:saleId", async (req, res) => {
+  const { saleId } = req.params;
+  try {
+    const allSales = await Sales.findAll({
+      where: { id: saleId },
+      include: [Experience, Package],
+    });
+
+    //Elimino sus paquetes y experiencias asociados
+    allSales.forEach((s) => {
+      Sales_experience.destroy({ where: { salesId: s.id } });
+      Sales_package.destroy({ where: { salesId: s.id } });
+    });
+
+    //Elimino el cart
+    Sales.destroy({ where: { userId: userId } });
+    return res.status(201).send("Sale deleted successfully");
+  } catch (err) {
     res.status(404).json({ error: err.message });
   }
 });

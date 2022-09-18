@@ -17,16 +17,22 @@ router.get("/:experienceId", async (req, res) => {
 });
 
 const removeAccents = (str) => {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
- }
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
 
 router.get("/", async (req, res) => {
   let { name } = req.query;
   try {
     if (name) {
-      let experiencesArray = await Experience.findAll({ include: [Category, Package]});
-      let searchedExperiences = experiencesArray.filter(e => removeAccents(e.name).toLowerCase().includes(removeAccents(name).toLowerCase()))
-      res.status(201).json(searchedExperiences)
+      let experiencesArray = await Experience.findAll({
+        include: [Category, Package],
+      });
+      let searchedExperiences = experiencesArray.filter((e) =>
+        removeAccents(e.name)
+          .toLowerCase()
+          .includes(removeAccents(name).toLowerCase())
+      );
+      res.status(201).json(searchedExperiences);
     } else {
       const allExperiences = await Experience.findAll({
         include: [Category, Package],
