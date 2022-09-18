@@ -14,18 +14,25 @@ const router = Router();
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const allSales = await Sale.findAll({
+    const userCart = await Sale.findAll({
       where: {
-        userId: userId,
+        [Op.and]: [{ userId: userId }, { status: "cart" }],
       },
       include: [Experience, Package],
     });
-    let allCart = allSales.filter((s) => s.status === "cart");
 
-    const cartExperiences = await allCart[0].experiences;
-    const cartPackages = await allCart[0].packages;
-    const allCartItems = cartPackages.concat(cartExperiences);
-    return res.status(200).send(allCartItems);
+    if (userCart.length > 0) {
+      const cartExperiences = await userCart[0].experiences.map((e) => {
+        return e.sale_experience;
+      });
+      const cartPackages = await userCart[0].packages.map((e) => {
+        return e.sale_package;
+      });
+      const allCartItems = cartPackages.concat(cartExperiences);
+      return res.status(200).send(allCartItems);
+    } else {
+      return res.status(200).send("There is no cart to this user");
+    }
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
