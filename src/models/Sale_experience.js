@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         // allowNull: false
       },
-      passengers: {
+      pax: {
         type: DataTypes.INTEGER,
         //allowNull: false,
       },
