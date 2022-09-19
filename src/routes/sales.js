@@ -82,16 +82,22 @@ router.post("/", async (req, res) => {
     arrayItems.forEach((i) => {
       if (i.type === "experience") {
         Sale_experience.create({
+          name: i.name,
+          image: i.image,
           dates: i.dates,
-          passengers: parseInt(i.pax),
+          price: parseInt(i.price),
+          pax: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
           experienceId: i.experienceId,
         });
       } else if (i.type === "package") {
         Sale_package.create({
+          name: i.name,
+          image: i.image,
           dates: i.dates,
-          passengers: parseInt(i.pax),
+          price: parseInt(i.price),
+          pax: parseInt(i.pax),
           total: parseInt(i.pax) * parseInt(i.price),
           saleId: newSale.id,
           packageId: i.packageId,
