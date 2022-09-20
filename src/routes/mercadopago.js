@@ -39,6 +39,7 @@ router.post("/", async (req, res) => {
       pending: "http://localhost:3000/home",
     },
     auto_return: "approved",
+    external_reference: "Reference_1234",
   };
 
   mercadopago.preferences
