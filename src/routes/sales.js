@@ -154,8 +154,10 @@ router.put("/", async (req, res) => {
 router.put("/approved", authenticateToken, async (req, res) => {
   const userId = req.id;
   const { status } = req.body;
+
   console.log(userId);
-  console.log(userId);
+  console.log(status);
+
   if (!userId || !status)
     return res.status(201).send("UserId and status are required");
   try {
