@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
   let preference = {
     items: arrayPreference,
     back_urls: {
-      success: "http://localhost:3000/home",
+      success: "https://experienceviveargentina.vercel.app/home",
       failure: "http://localhost:3000/home",
       pending: "http://localhost:3000/home",
     },
