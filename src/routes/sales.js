@@ -8,6 +8,7 @@ const {
   User,
 } = require("../database");
 const { Op } = require("sequelize");
+const { transporter, authenticateToken } = require("../utils/utils");
 
 const router = Router();
 
@@ -142,6 +143,24 @@ router.put("/", async (req, res) => {
       { status: status },
       {
         where: { id: saleId },
+      }
+    );
+    return res.status(201).send("Sale updated successfully");
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.put("/approved", authenticateToken, async (req, res) => {
+  const userId = req.id;
+  const { status } = req.body;
+  if (!userId || !status)
+    return res.status(201).send("UserId and status are required");
+  try {
+    Sale.update(
+      { status: status },
+      {
+        where: { userId: userId },
       }
     );
     return res.status(201).send("Sale updated successfully");
