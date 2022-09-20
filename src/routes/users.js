@@ -3,9 +3,7 @@ const { User, Query, Review, Experience, Package } = require("../database");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { transporter, authenticateToken } = require("../utils/utils");
-
 const router = Router();
-
 
 router.post("/google_login", async (req, res)=>{
   const {first_name, last_name, email, password, photo} = req.body;
@@ -95,8 +93,8 @@ router.post("/password_reset", authenticateToken, async (req, res)=>{
 
 router.post("/singin", async (req, res)=>{
   const {first_name, last_name, email, password} = req.body;
-  if (!first_name){
-    return res.status(404).send("You must enter a name, email and password to create a new user");
+  if (!first_name || !last_name || !email || !password){
+    return res.status(404).send("You must enter a first name, last name, email and password to create a new user");
   }
   try {
     const user = await User.findAll({
@@ -104,7 +102,7 @@ router.post("/singin", async (req, res)=>{
         email: email
       }
     })
-    if(user.length>0)return res.status(400).send('There is already an user registered with this mail')
+    if(user.length > 0)return res.status(400).send('There is already an user registered with this mail')
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await User.create({
       first_name,
@@ -122,7 +120,7 @@ router.post("/singin", async (req, res)=>{
             <p>Click the link below to complete the registration</p>
             <buttom><a href="https://experienceviveargentina.vercel.app/verify/${accessToken}">Confirm Registration</a></buttom>`, // html body
     })
-    res.status(200).send(`An email was send to ${newUser.email}. Check the email to complete the registration`)
+    res.status(200).send(`An email was sent to ${newUser.email}. Check the email to complete the registration`)
   } catch (error) {
     res.status(500).send('error')
   }
