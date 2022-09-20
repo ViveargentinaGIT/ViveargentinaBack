@@ -154,13 +154,17 @@ router.put("/", async (req, res) => {
 router.put("/approved", authenticateToken, async (req, res) => {
   const userId = req.id;
   const { status } = req.body;
+  console.log(userId);
+  console.log(userId);
   if (!userId || !status)
     return res.status(201).send("UserId and status are required");
   try {
     Sale.update(
       { status: status },
       {
-        where: { userId: userId },
+        where: {
+          [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
+        },
       }
     );
     return res.status(201).send("Sale updated successfully");
