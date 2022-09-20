@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
 
   try {
     // Busco el cart anterior de este usuario
-    const allSales = await Sale.findAll({
+    const allSalesCart = await Sale.findAll({
       where: {
         [Op.and]: [{ userId: userId }, { status: "cart" }],
       },
@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
     });
 
     //Elimino sus paquetes y experiencias asociados
-    allSales.forEach((s) => {
+    allSalesCart.forEach((s) => {
       Sale_experience.destroy({ where: { saleId: s.id } });
       Sale_package.destroy({ where: { saleId: s.id } });
     });
@@ -62,6 +62,27 @@ router.post("/", async (req, res) => {
     await Sale.destroy({
       where: {
         [Op.and]: [{ userId: userId }, { status: "cart" }],
+      },
+    });
+
+    // Busco el pago pendiente anterior de este usuario
+    const allSalesPending = await Sale.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
+      },
+      include: [Experience, Package],
+    });
+
+    //Elimino sus paquetes y experiencias asociados
+    allSalesPending.forEach((s) => {
+      Sale_experience.destroy({ where: { saleId: s.id } });
+      Sale_package.destroy({ where: { saleId: s.id } });
+    });
+
+    //Elimino el pago pendiente anterior
+    await Sale.destroy({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
       },
     });
 
