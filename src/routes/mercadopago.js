@@ -38,8 +38,8 @@ router.post("/", async (req, res) => {
     items: arrayPreference,
     back_urls: {
       success: "https://experienceviveargentina.vercel.app/approved",
-      failure: "https://viveargentina.herokuapp.com/mercadopago/failure",
-      pending: "http://localhost:3000/home",
+      failure: "https://experienceviveargentina.vercel.app/approved",
+      pending: "https://experienceviveargentina.vercel.app/approved",
     },
     auto_return: "approved",
     external_reference: `${saleId}`,
