@@ -200,9 +200,13 @@ router.put("/approved", authenticateToken, async (req, res) => {
     await transporter.sendMail({
       from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
       to: email, // list of receivers
-      subject: "Viveargentina purchase confirmation", // Subject line
+      subject: `Viveargentina purchase ${
+        status === "approved" ? "confirmation" : "rejected"
+      }`, // Subject line
       html: `<h1>ExperianceViveArgentina! purchase confirmation</h1>
-      <p>${first_name} your purchase for Ars $${total} was confirmed.</p>
+      <p>${first_name} your purchase for Ars $${total} was ${
+        status === "approved" ? "confirmed" : "rejected"
+      }.</p>
       <p>Items included:</p>
       ${experienceString.map((e) => {
         return `<p>${e}</p>`;
@@ -224,7 +228,9 @@ router.put("/approved", authenticateToken, async (req, res) => {
       }
     );
 
-    return res.status(201).send("Sale updated successfully");
+    return res
+      .status(201)
+      .send(`Purchase ${status === "approved" ? "confirmed" : "rejected"}`);
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
