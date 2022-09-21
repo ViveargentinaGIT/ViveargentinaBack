@@ -12,7 +12,8 @@ mercadopago.configure({
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/failure", async (req, res) => {
+  console.log(req.query);
   try {
     return res.status(200).send("MeradoPago");
   } catch (err) {
@@ -35,7 +36,7 @@ router.post("/", async (req, res) => {
     items: arrayPreference,
     back_urls: {
       success: "https://experienceviveargentina.vercel.app/approved",
-      failure: "http://localhost:3000/home",
+      failure: "https://viveargentina.herokuapp.com/mercadopago/failure",
       pending: "http://localhost:3000/home",
     },
     auto_return: "approved",
