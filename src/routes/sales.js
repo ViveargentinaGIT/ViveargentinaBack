@@ -161,6 +161,59 @@ router.put("/approved", authenticateToken, async (req, res) => {
   if (!userId || !status)
     return res.status(201).send("UserId and status are required");
   try {
+    const selectedSale = await Sale.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
+      },
+      include: [Experience, Package, User],
+    });
+
+    let total = selectedSale[0].total;
+    let first_name = selectedSale[0].user.first_name;
+    let email = selectedSale[0].user.email;
+
+    let experiences = selectedSale[0].experiences;
+    let packages = selectedSale[0].packages;
+
+    let experienceString = experiences.map((e) => {
+      return (
+        e.name +
+        " - " +
+        e.sale_experience.pax +
+        " Passengers" +
+        " - " +
+        e.sale_experience.dates
+      );
+    });
+
+    let packageString = packages.map((e) => {
+      return (
+        e.name +
+        " - " +
+        e.sale_package.pax +
+        "Passengers" +
+        " - " +
+        e.sale_package.dates
+      );
+    });
+
+    await transporter.sendMail({
+      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      to: email, // list of receivers
+      subject: "Viveargentina purchase confirmation", // Subject line
+      html: `<h1>ExperianceViveArgentina! purchase confirmation</h1>
+      <p>${first_name} your purchase for Ars $${total} was confirmed.</p>
+      <p>Items included:</p>
+      ${experienceString.map((e) => {
+        return `<p>${e}</p>`;
+      })}
+      ${packageString.map((e) => {
+        return `<p>${e}</p>`;
+      })}
+      
+      `, // html body
+    });
+
     Sale.update(
       { status: status },
       {
@@ -169,6 +222,7 @@ router.put("/approved", authenticateToken, async (req, res) => {
         },
       }
     );
+
     return res.status(201).send("Sale updated successfully");
   } catch (err) {
     res.status(404).json({ error: err.message });
