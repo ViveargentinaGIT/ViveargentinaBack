@@ -126,8 +126,8 @@ router.post("/", async (req, res) => {
         });
       }
     });
-
-    return res.status(201).json(newSale);
+    console.log("saleId ", newSale.id);
+    return res.status(201).json(newSale.id);
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err.message });

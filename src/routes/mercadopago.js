@@ -22,6 +22,8 @@ router.get("/failure", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const { saleId } = req.query;
+  console.log("saleId in preference", saleId);
   const arrayItems = req.body;
   const arrayPreference = arrayItems.map((i) => {
     return {
@@ -40,7 +42,7 @@ router.post("/", async (req, res) => {
       pending: "http://localhost:3000/home",
     },
     auto_return: "approved",
-    external_reference: "Reference_1234",
+    external_reference: `${saleId}`,
   };
 
   mercadopago.preferences
@@ -57,6 +59,7 @@ router.post("/", async (req, res) => {
 router.post("/response", async (req, res) => {
   try {
     console.log(req.body);
+
     return res.status(200).send("OK");
   } catch (err) {
     res.status(400).json({ error: err.message });
