@@ -45,27 +45,6 @@ router.post("/", async (req, res) => {
   const arrayItems = req.body;
 
   try {
-    // Busco el cart anterior de este usuario
-    const allSalesCart = await Sale.findAll({
-      where: {
-        [Op.and]: [{ userId: userId }, { status: "cart" }],
-      },
-      include: [Experience, Package],
-    });
-
-    //Elimino sus paquetes y experiencias asociados
-    allSalesCart.forEach((s) => {
-      Sale_experience.destroy({ where: { saleId: s.id } });
-      Sale_package.destroy({ where: { saleId: s.id } });
-    });
-
-    //Elimino el cart
-    await Sale.destroy({
-      where: {
-        [Op.and]: [{ userId: userId }, { status: "cart" }],
-      },
-    });
-
     // Busco el pago pendiente anterior de este usuario
     const allSalesPending = await Sale.findAll({
       where: {
@@ -153,7 +132,7 @@ router.put("/", async (req, res) => {
 
 router.put("/approved", authenticateToken, async (req, res) => {
   const userId = req.id;
-  const { status } = req.body;
+  const { status, saleId } = req.body;
 
   console.log(userId);
   console.log(status);
@@ -161,9 +140,30 @@ router.put("/approved", authenticateToken, async (req, res) => {
   if (!userId || !status)
     return res.status(201).send("UserId and status are required");
   try {
+    // Busco el cart anterior de este usuario
+    const allSalesCart = await Sale.findAll({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "cart" }],
+      },
+      include: [Experience, Package],
+    });
+
+    //Elimino sus paquetes y experiencias asociados
+    allSalesCart.forEach((s) => {
+      Sale_experience.destroy({ where: { saleId: s.id } });
+      Sale_package.destroy({ where: { saleId: s.id } });
+    });
+
+    //Elimino el cart
+    await Sale.destroy({
+      where: {
+        [Op.and]: [{ userId: userId }, { status: "cart" }],
+      },
+    });
+
     const selectedSale = await Sale.findAll({
       where: {
-        [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
+        id: saleId,
       },
       include: [Experience, Package, User],
     });
@@ -214,11 +214,12 @@ router.put("/approved", authenticateToken, async (req, res) => {
       `, // html body
     });
 
+    //rejected   // approved     //confirmed  // canceled
     Sale.update(
-      { status: status },
+      { status: status === "approved" ? "confirmed" : "canceled" },
       {
         where: {
-          [Op.and]: [{ userId: userId }, { status: "Pending payment" }],
+          id: saleId,
         },
       }
     );
@@ -248,6 +249,26 @@ router.delete("/:saleId", async (req, res) => {
     return res.status(201).send("Sale deleted successfully");
   } catch (err) {
     res.status(404).json({ error: err.message });
+  }
+});
+
+router.get("/cancelation/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { saleId } = req.params;
+  try {
+    await transporter.sendMail({
+      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      to: '"Viveargentina" <vaviveargentina@gmail.com>', // list of receivers
+      subject: "Viveargentina solicitude of cancelation", // Subject line
+      html: `<h1>Viveargentina solicitude of cancelation</h1>
+      <p>The user with the id= ${userId} is requesting to cancel the sale with the id= ${saleId}.</p>
+      `, // html body
+    });
+    return res
+      .status(200)
+      .send("Solicitude of cancelation received successfully ");
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 
