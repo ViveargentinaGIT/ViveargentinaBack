@@ -244,11 +244,9 @@ router.put("/approved", authenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/:saleId", async (req, res) => {
-  const { saleId } = req.params;
+router.delete("/", async (req, res) => {
   try {
     const allSales = await Sale.findAll({
-      where: { id: saleId },
       include: [Experience, Package],
     });
 
@@ -256,19 +254,18 @@ router.delete("/:saleId", async (req, res) => {
     allSales.forEach((s) => {
       Sale_experience.destroy({ where: { saleId: s.id } });
       Sale_package.destroy({ where: { saleId: s.id } });
+      Sale.destroy({ where: { id: s.id } });
     });
 
-    //Elimino el cart
-    Sale.destroy({ where: { id: saleId } });
-    return res.status(201).send("Sale deleted successfully");
+    return res.status(201).send("Sales deleted successfully");
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
 });
 
-router.get("/cancelation/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const { saleId } = req.params;
+router.get("/cancelation/", async (req, res) => {
+  const { userId } = req.query;
+  const { saleId } = req.query;
   try {
     await transporter.sendMail({
       from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
