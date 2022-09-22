@@ -203,7 +203,9 @@ router.put("/approved", authenticateToken, async (req, res) => {
       subject: `Viveargentina purchase ${
         status === "approved" ? "confirmation" : "rejected"
       }`, // Subject line
-      html: `<h1>ExperianceViveArgentina! purchase confirmation</h1>
+      html: `<h1>ExperianceViveArgentina! purchase ${
+        status === "approved" ? "confirmation" : "rejected"
+      }</h1>
       <p>${first_name} your purchase for Ars $${total} was ${
         status === "approved" ? "confirmed" : "rejected"
       }.</p>
@@ -230,7 +232,13 @@ router.put("/approved", authenticateToken, async (req, res) => {
 
     return res
       .status(201)
-      .send(`Purchase ${status === "approved" ? "confirmed" : "rejected"}`);
+      .send(
+        `${
+          status === "approved"
+            ? "Time to travel!"
+            : "Payment rejected, try again."
+        }`
+      );
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
