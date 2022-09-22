@@ -12,6 +12,28 @@ const { transporter, authenticateToken } = require("../utils/utils");
 
 const router = Router();
 
+router.get("/cancel", async (req, res) => {
+  const { userId, saleId } = req.query;
+  console.log(userId);
+  console.log(saleId);
+
+  try {
+    await transporter.sendMail({
+      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      to: '"Viveargentina" <vaviveargentina@gmail.com>', // list of receivers
+      subject: "Viveargentina solicitude of cancelation", // Subject line
+      html: `<h1>Viveargentina solicitude of cancelation</h1>
+      <p>The user with the id= ${userId} is requesting to cancel the sale with the id= ${saleId}.</p>
+      `, // html body
+    });
+    return res
+      .status(200)
+      .send("Solicitude of cancelation received successfully ");
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
@@ -260,26 +282,6 @@ router.delete("/", async (req, res) => {
     return res.status(201).send("Sales deleted successfully");
   } catch (err) {
     res.status(404).json({ error: err.message });
-  }
-});
-
-router.get("/cancelation/", async (req, res) => {
-  const { userId } = req.query;
-  const { saleId } = req.query;
-  try {
-    await transporter.sendMail({
-      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
-      to: '"Viveargentina" <vaviveargentina@gmail.com>', // list of receivers
-      subject: "Viveargentina solicitude of cancelation", // Subject line
-      html: `<h1>Viveargentina solicitude of cancelation</h1>
-      <p>The user with the id= ${userId} is requesting to cancel the sale with the id= ${saleId}.</p>
-      `, // html body
-    });
-    return res
-      .status(200)
-      .send("Solicitude of cancelation received successfully ");
-  } catch (err) {
-    res.status(400).json({ error: err.message });
   }
 });
 
