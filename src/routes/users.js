@@ -112,7 +112,7 @@ router.post("/singin", async (req, res)=>{
     });
     const accessToken = await jwt.sign(newUser.id, "henryboom")
     await transporter.sendMail({
-      from: '"Viveargentina" <vaviveargentina@gmail.com>', // sender address
+      from: 'vaviveargentina@gmail.com', // sender address
       to: newUser.email, // list of receivers
       subject: "Viveargentina email confirmation", // Subject line
       html: `<h1>ExperianceViveArgentina! confirmation email</h1>
