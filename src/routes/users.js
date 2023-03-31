@@ -119,6 +119,12 @@ router.post("/singin", async (req, res)=>{
             <p>If you have not register to experienceviveargentina please ignore this email</p>
             <p>Click the link below to complete the registration</p>
             <buttom><a href="https://experienceviveargentina.vercel.app/verify/${accessToken}">Confirm Registration</a></buttom>`, // html body
+    }, function(error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Correo electrónico enviado: ' + info.response);
+      }
     })
     res.status(200).send(`An email was sent to ${newUser.email}. Check the email to complete the registration`)
   } catch (error) {
